@@ -1,4 +1,12 @@
 # UI for Travel Agencies page
 travel_agencies_ui <- fluidPage(
-  # UI components specific to Travel Agencies page
+  titlePanel("Travel Agencies"),
+  sidebarLayout(
+    sidebarPanel(
+      # Add sidebar components as needed
+    ),
+    mainPanel(
+      plotOutput("travel_agencies_plot")
+    )
+  )
 )

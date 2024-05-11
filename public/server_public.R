@@ -1,4 +1,12 @@
-# Server logic for Public page
-public_server <- function(input, output) {
-  # Server logic specific to Public page
-}
+# UI for Public page
+public_ui <- fluidPage(
+  titlePanel("Public"),
+  sidebarLayout(
+    sidebarPanel(
+      # Add sidebar components as needed
+    ),
+    mainPanel(
+      plotOutput("public_plot")
+    )
+  )
+)

@@ -1,4 +1,12 @@
 # UI for Countries page
 countries_ui <- fluidPage(
-  # UI components specific to Countries page
+  titlePanel("Countries"),
+  sidebarLayout(
+    sidebarPanel(
+      # Add sidebar components as needed
+    ),
+    mainPanel(
+      plotOutput("countries_plot")
+    )
+  )
 )

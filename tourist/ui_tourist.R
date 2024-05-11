@@ -1,4 +1,12 @@
 # UI for Tourist page
 tourist_ui <- fluidPage(
-  # UI components specific to Tourist page
+  titlePanel("Tourist"),
+  sidebarLayout(
+    sidebarPanel(
+      # Add sidebar components as needed
+    ),
+    mainPanel(
+      plotOutput("tourist_plot")
+    )
+  )
 )
