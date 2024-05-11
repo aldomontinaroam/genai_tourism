@@ -9,17 +9,17 @@ source("2_accbus/server_accommodation_businesses.R")
 source("3_countries/ui_countries.R")
 source("3_countries/server_countries.R")
 source("4_public/ui_public.R")
-source("4_public/server_public.R")
+source("4_public/server_public.R", local = TRUE)
 source("5_tourist/ui_tourist.R")
 source("5_tourist/server_tourist.R")
 source("6_rights/ui_rights.R")
 source("6_rights/server_rights.R")
 
 # Define server logic
-server <- function(input, output) {
+server <- function(input, output, session) {
   call_modules <- function(module_server) {
     lapply(module_server, function(server_func) {
-      server_func(input, output)
+      server_func(input, output)  # Remove session argument here
     })
   }
   
@@ -28,11 +28,12 @@ server <- function(input, output) {
     travel_agencies_server,
     accommodation_businesses_server,
     countries_server,
-    public_server,
+    function(input, output) { public_server(input, output, session) },  # Pass session here
     tourist_server,
     rights_server
   ))
 }
+
 
 # Define UI for application
 ui <- navbarPage(
