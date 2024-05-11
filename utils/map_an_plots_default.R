@@ -1,7 +1,14 @@
+library(shiny)
+library(leaflet)
+library(wordcloud)
+
 data <- read.csv("4_public/data/geocoded_.csv", row.names = NULL, stringsAsFactors = FALSE, sep = ",")
 
 # Define server function
 public_server <- function(input, output, session) {
+  
+  # Load data
+  
   
   # Reactive expression for filtered cities based on selected region
   filtered_cities <- reactive({
@@ -32,11 +39,6 @@ public_server <- function(input, output, session) {
     }
   })
   
-  customIcon <- makeIcon(
-    iconUrl = "4_public/data/dmo_icon.png",
-    iconWidth = 30, iconHeight = 40
-  )
-  
   # Render leaflet map
   output$public_map <- renderLeaflet({
     req(filtered_data()) # Ensure filtered data is available
@@ -44,8 +46,7 @@ public_server <- function(input, output, session) {
       addTiles(urlTemplate = "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png") %>% # Change map tiles
       setView(lng = mean(filtered_data()$original_longitude), lat = mean(filtered_data()$original_latitude), zoom = 5) %>% # Set initial view and zoom level
       addMarkers(lng = filtered_data()$original_longitude, lat = filtered_data()$original_latitude, 
-                 popup = paste("<b>DMO:</b>", filtered_data()$original_dmo, "<br>", filtered_data()$formatted),
-                 icon = customIcon) # Customize popup content
+                 popup = paste("<b>DMO:</b>", filtered_data()$original_dmo, "<br>", filtered_data()$formatted)) # Customize popup content
   })
   
   # Generate mock data for word clouds and bar plots
@@ -109,3 +110,9 @@ public_ui <- fluidPage(
     )
   )
 )
+
+
+
+
+# Run the application
+shinyApp(ui = public_ui, server = public_server)

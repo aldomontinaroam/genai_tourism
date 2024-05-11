@@ -1,19 +1,26 @@
 library(shiny)
 library(leaflet)
+library(wordcloud)
+library(tm)
 
 # Source UI and server files
-source("1_ota/ui_travel_agencies.R")
 source("1_ota/server_travel_agencies.R")
-source("2_accbus/ui_accommodation_businesses.R")
+source("1_ota/ui_travel_agencies.R")
+
 source("2_accbus/server_accommodation_businesses.R")
-source("3_countries/ui_countries.R")
+source("2_accbus/ui_accommodation_businesses.R")
+
 source("3_countries/server_countries.R")
-source("4_public/ui_public.R")
+source("3_countries/ui_countries.R")
+
 source("4_public/server_public.R", local = TRUE)
-source("5_tourist/ui_tourist.R")
+source("4_public/ui_public.R")
+
 source("5_tourist/server_tourist.R")
-source("6_rights/ui_rights.R")
+source("5_tourist/ui_tourist.R")
+
 source("6_rights/server_rights.R")
+source("6_rights/ui_rights.R")
 
 # Define server logic
 server <- function(input, output, session) {
