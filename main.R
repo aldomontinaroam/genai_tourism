@@ -1,13 +1,37 @@
 library(shiny)
+library(leaflet)
+
+# Source UI and server files
+source("1_ota/ui_travel_agencies.R")
+source("1_ota/server_travel_agencies.R")
+source("2_accbus/ui_accommodation_businesses.R")
+source("2_accbus/server_accommodation_businesses.R")
+source("3_countries/ui_countries.R")
+source("3_countries/server_countries.R")
+source("4_public/ui_public.R")
+source("4_public/server_public.R")
+source("5_tourist/ui_tourist.R")
+source("5_tourist/server_tourist.R")
+source("6_rights/ui_rights.R")
+source("6_rights/server_rights.R")
 
 # Define server logic
 server <- function(input, output) {
-  source("1_ota/server_travel_agencies.R")
-  source("2_accbus/server_accommodation_businesses.R")
-  source("3_countries/server_countries.R")
-  source("4_public/server_public.R")
-  source("5_tourist/server_tourist.R")
-  source("6_rights/server_rights.R")
+  call_modules <- function(module_server) {
+    lapply(module_server, function(server_func) {
+      server_func(input, output)
+    })
+  }
+  
+  # Call all server logic functions
+  call_modules(list(
+    travel_agencies_server,
+    accommodation_businesses_server,
+    countries_server,
+    public_server,
+    tourist_server,
+    rights_server
+  ))
 }
 
 # Define UI for application
@@ -15,30 +39,29 @@ ui <- navbarPage(
   title = "Travel Dashboard",
   
   tabPanel("Travel Agencies",
-           source("1_ota/ui_travel_agencies.R")
+           travel_agencies_ui
   ),
   
   tabPanel("Accommodation Businesses",
-           source("2_accbus/ui_accommodation_businesses.R")
+           accommodation_businesses_ui
   ),
   
   tabPanel("Countries",
-           source("3_countries/ui_countries.R")
+           countries_ui
   ),
   
   tabPanel("Public",
-           source("4_public/ui_public.R")
+           public_ui
   ),
   
   tabPanel("Tourist",
-           source("5_tourist/ui_tourist.R")
+           tourist_ui
   ),
   
   tabPanel("Rights",
-           source("6_rights/ui_rights.R")
+           rights_ui
   )
 )
 
 # Run the application
 shinyApp(ui = ui, server = server)
-
