@@ -1,0 +1,22 @@
+<h3>About Booking's SCIence</h3>
+             <p>Welcome to Booking's SCIence, where Strategic and Competitive Intelligence (SCI) meets cutting-edge data analysis to empower decision-makers in the travel industry. As a team dedicated to unraveling the complexities of the ever-evolving market landscape, we pride ourselves on delivering actionable insights that drive success.</p>
+             
+             <h4>Our Mission</h4>
+             <p>At Booking's SCIence, our mission is clear: to provide the Ministero del Turismo of Italy with a comprehensive dashboard solution that illuminates the strategic implications of Generative Artificial Intelligence (GenAI) across various sectors within the travel industry. Through meticulous analysis and innovative data visualization techniques, we aim to equip our clients with the knowledge and foresight needed to navigate the challenges and opportunities of tomorrow's tourism landscape.</p>
+             
+             <h4>Key Areas of Expertise</h4>
+             <p>Drawing on our expertise in SCI, data analysis, and industry trends, Booking's SCIence specializes in addressing critical questions within the travel sector, including:</p>
+             <ul>
+               <li><strong>Travel Agencies:</strong> How are major Online Travel Agencies (OTAs) investing in Generative AI? Can smaller travel agencies remain competitive in this evolving landscape?</li>
+               <li><strong>Accommodation Businesses:</strong> What is the impact of GenAI on accommodation businesses? How might OTA choices significantly affect these businesses?</li>
+               <li><strong>Countries:</strong> Are other EU countries investing in GenAI, and to what extent?</li>
+               <li><strong>Public Entities:</strong> How can Destination Management Organizations (DMOs) use GenAI to enhance tourist attraction efforts?</li>
+               <li><strong>Tourist Behavior:</strong> In what phases of the travel planning journey is GenAI relevant? How might planning and booking behaviors change with GenAI integration?</li>
+               <li><strong>Rights Protection:</strong> Are the rights of accommodation businesses and consumers threatened by GenAI? What new policies might be necessary to address emerging challenges?</li>
+             </ul>
+             
+             <h4>Our Commitment</h4>
+             <p>Booking's SCIence is committed to delivering actionable insights that drive tangible outcomes for our clients. With a focus on innovation, integrity, and excellence, we strive to exceed expectations and empower decision-makers to embrace the future with confidence.</p>
+             
+             <h4>Get in Touch</h4>
+             <p>Are you ready to harness the power of SCI to unlock new opportunities in the travel industry? Reach out to Booking's SCIence today to learn more about our customized solutions and how we can support your organization's strategic objectives. Together, let's chart a course towards success in the dynamic world of travel and tourism.</p>
