@@ -2,6 +2,7 @@ library(shiny)
 library(leaflet)
 library(wordcloud)
 library(tm)
+library(bslib)
 
 # Source UI and server files
 source("1_ota/server_travel_agencies.R")
@@ -41,10 +42,25 @@ server <- function(input, output, session) {
   ))
 }
 
-
 # Define UI for application
 ui <- navbarPage(
-  title = "Travel Dashboard",
+  title = "SOTA GenAI in Tourism",
+  theme = bs_theme(version = 5, bootswatch = "solar"),
+  
+  tags$style(HTML("
+    
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #bbdef0;
+      padding: 5px;
+      text-align: center;
+      color: #03003B;
+    }
+    
+  ")),
   
   tabPanel("Travel Agencies",
            travel_agencies_ui
@@ -68,8 +84,21 @@ ui <- navbarPage(
   
   tabPanel("Rights",
            rights_ui
+  ),
+  
+  # Adding footer
+  tags$footer(class = "footer",
+              tags$div(
+                tags$a(href = "http://www.google.com", class = "btn btn-secondary", style = "float: left; margin-right: 10px;", "Google"),
+                tags$img(src = "footer_logo.png", height = "50px"),
+                tags$a(href = "about.html", class = "btn btn-primary", "About", style = "float: right; margin-left: 10px;")
+              ),
+              tags$p("© 2024 Booking's SCIence. All rights reserved.", style = "margin-top: 5px; font-size: 10px; color: #555;")
   )
+  
 )
 
 # Run the application
 shinyApp(ui = ui, server = server)
+
+

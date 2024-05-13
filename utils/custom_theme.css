@@ -1,0 +1,31 @@
+/* custom.css */
+
+/* Tab colors */
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:focus,
+.navbar-default .navbar-nav > .open > a:hover {
+    background-color: #bbdef0 !important; /* Active tab background color */
+    color: #000 !important; /* Active tab text color */
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #00a6a6 !important; /* Tab text color */
+}
+
+/* Navbar background color */
+.navbar-default {
+    background-color: #efca08 !important; /* Navbar background color */
+}
+
+/* Panel background color */
+.tab-content {
+    background-color: #f49f0a !important; /* Panel background color */
+}
+
+/* Tab text color */
+.navbar-default .navbar-nav > li > a {
+    color: #f08700 !important; /* Tab text color */
+}

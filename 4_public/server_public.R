@@ -41,7 +41,7 @@ public_server <- function(input, output, session) {
   output$public_map <- renderLeaflet({
     req(filtered_data()) # Ensure filtered data is available
     leaflet() %>%
-      addTiles(urlTemplate = "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png") %>% # Change map tiles
+      addTiles(urlTemplate = "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png") %>% # Change map tiles
       setView(lng = mean(filtered_data()$original_longitude), lat = mean(filtered_data()$original_latitude), zoom = 5) %>% # Set initial view and zoom level
       addMarkers(lng = filtered_data()$original_longitude, lat = filtered_data()$original_latitude, 
                  popup = paste("<b>DMO:</b>", filtered_data()$original_dmo, "<br>", filtered_data()$formatted),
