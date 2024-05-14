@@ -1,4 +1,4 @@
-source("6_rights/global.R")
+source("6_rights/global_rights.R")
 
 # UI for Rights page
 rights_ui <- fluidPage(

@@ -23,7 +23,7 @@ stop_words_custom <- c(
   "generated", "generation", "generating", "generates", "generate",
   "creating", "create", "created", "creation", "creates",
   "local", "locals", "locally", "locale", "locales",
-  "cdata", "var", "ucbutton", "typeubutton"
+  "cdata", "var", "ucbutton", "typeubutton", "the", "this", "like", "data", "generative"
 )
 
 stop_words_pdfs <- c(

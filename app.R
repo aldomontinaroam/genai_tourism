@@ -79,9 +79,18 @@ server <- function(input, output, session) {
 }
 
 # Define UI for application
-ui <- tagList(
-  div(
-    tags$style(HTML("
+ui <- fluidPage(
+  theme = bs_theme(version = 5, bootswatch = "morph")|>
+    bslib::bs_add_rules(
+      rules = "
+                    .navbar.navbar-default {
+                        background-color: #bbdef0 !important;
+                        color: #151B54 !important;
+                    }
+                  
+                    "
+    ),
+  tags$style(HTML("
       .footer {
         position: fixed;
         bottom: 0;
@@ -93,19 +102,16 @@ ui <- tagList(
         color: #03003B;
       }
     ")),
-    
-    navbarPage(
-      title = "SOTA GenAI in Tourism",
-      theme = bs_theme(version = 5, bootswatch = "solar"),
-      tabPanel("Travel Agencies", travel_agencies_ui),
-      tabPanel("Accommodation Businesses", accommodation_businesses_ui),
-      tabPanel("Countries", countries_ui),
-      tabPanel("Public", public_ui),
-      tabPanel("Tourist", tourist_ui),
-      tabPanel("Rights", rights_ui)
-    )
+  tags$img(src = "logo_bsci-removebg-preview.png", height = "60px", style = "text-align:center;margin:auto; display:flex; justify-content:center; align-items:center"),  # Add your logo here
+  navbarPage(
+    title = "SOTA GenAI in Tourism",
+    tabPanel("Travel Agencies", travel_agencies_ui),
+    tabPanel("Accommodation Businesses", accommodation_businesses_ui),
+    tabPanel("Countries", countries_ui),
+    tabPanel("Public", public_ui),
+    tabPanel("Tourist", tourist_ui),
+    tabPanel("Rights", rights_ui)
   ),
-  
   tags$footer(class = "footer",
               tags$div(
                 tags$a(href = "https://esami.unipi.it/esami2/ects_shortprogram.php?a=61771", class = "btn btn-secondary", style = "float: left; margin-right: 10px;", "SCI"),
@@ -120,6 +126,7 @@ ui <- tagList(
               tags$p("© 2024 Booking's SCIence. All rights reserved.", style = "margin-top: 5px; margin-bottom:0px; font-size: 8px; color: #555;")
   )
 )
+
 
 
 # Run the application
