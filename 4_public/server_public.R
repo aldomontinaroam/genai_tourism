@@ -22,7 +22,24 @@ stop_words_custom <- c(
   "res", "httpsdoiorg", "generative ai", "ai", "google", "artificial intelligence",
   "generated", "generation", "generating", "generates", "generate",
   "creating", "create", "created", "creation", "creates",
-  "local", "locals", "locally", "locale", "locales"
+  "local", "locals", "locally", "locale", "locales",
+  "cdata", "var", "ucbutton", "typeubutton"
+)
+
+stop_words_pdfs <- c(
+  "tourism", "tourist", "tourists", "destination", "destinations", "travel", "traveller", "travellers",
+  "management", "dmo", "dmos", "use", "case", "cases",
+  "et", "al", "crossref",
+  "can", "could", "may", "might", "must", "shall", "should", "will", "would",
+  "also", "however", "therefore", "thus", "hence", "moreover", "furthermore",
+  "e.g.", "i.e.", "etc.", "et al.", "al.",
+  "tool", "tools", "method", "methods", "approach", "approaches", "technique", "techniques",
+  "res", "httpsdoiorg", "generative ai", "ai", "google", "artificial intelligence",
+  "generated", "generation", "generating", "generates", "generate",
+  "creating", "create", "created", "creation", "creates",
+  "local", "locals", "locally", "locale", "locales",
+  "-May-", "formatThis"
+  
 )
 
 # Define server function
@@ -106,7 +123,12 @@ public_server <- function(input, output, session) {
       "—",  # Remove em dashes
       "\\.",  # Remove periods
       "\\n",  # Remove newline characters
-      "\\[\\]"  # Remove empty brackets
+      "\\[\\]",  # Remove empty brackets
+      "\\(\\)",  # Remove empty parentheses
+      "\\,\\s*\\)",  # Remove , ) patterns
+      "\\s*\\,\\s*",  # Remove multiple consecutive commas
+      "\\s*\\;\\s*",  # Remove multiple consecutive semicolons
+      "\\s*\\:\\s*"  # Remove multiple consecutive colons
     )
     # Remove patterns from text
     for (pattern in patterns) {
@@ -140,8 +162,7 @@ public_server <- function(input, output, session) {
       cleaned_text <- removeNumbers(cleaned_text)
       cleaned_text <- removeWords(cleaned_text, c(stopwords("en"), stop_words_custom))
       cleaned_text <- remove_stop_bigrams(cleaned_text)
-      
-      
+      cleaned_text <- remove_unwanted_patterns(cleaned_text) # Add this line
       cleaned_text <- stripWhitespace(cleaned_text)
       
       if (nchar(cleaned_text) == 0) {
@@ -154,6 +175,19 @@ public_server <- function(input, output, session) {
       message("Error scraping URL: ", url, "\n", e)
       return("")
     })
+  }
+  
+  scrape_and_clean_pdfs <- function(pdf_files) {
+    combined_text <- sapply(pdf_files, extract_text_from_local_pdf)
+    all_clean_text <- paste(combined_text, collapse = " ")
+    
+    # Remove stop words and bigrams containing stop words
+    all_clean_text <- removeWords(all_clean_text, c(stopwords("en"), stop_words_pdfs))
+    all_clean_text <- remove_stop_bigrams(all_clean_text)
+    # Apply remove_unwanted_patterns to clean text
+    all_clean_text <- remove_unwanted_patterns(all_clean_text) # Add this line
+    
+    return(all_clean_text)
   }
   
   # Function to extract text from PDF files
@@ -191,19 +225,6 @@ public_server <- function(input, output, session) {
     return(all_clean_text)
   }
   
-  # Function to scrape and clean text from PDF files
-  scrape_and_clean_pdfs <- function(pdf_files) {
-    combined_text <- sapply(pdf_files, extract_text_from_local_pdf)
-    all_clean_text <- paste(combined_text, collapse = " ")
-    
-    # Remove stop words and bigrams containing stop words
-    all_clean_text <- removeWords(all_clean_text, c(stopwords("en"), stop_words_custom))
-    all_clean_text <- remove_stop_bigrams(all_clean_text)
-    # Apply remove_unwanted_patterns to clean text
-    all_clean_text <- remove_unwanted_patterns(all_clean_text)
-    
-    return(all_clean_text)
-  }
   
   # Word cloud for scraped web URLs
   output$word_cloud_web_urls <- renderPlot({
@@ -263,12 +284,12 @@ public_server <- function(input, output, session) {
       filter(!str_detect(ngrams, paste(stop_words_custom, collapse = "|")),  # Filter out bigrams containing custom stop words
              !str_detect(ngrams, "\\b(?:the|of|on|in|for|to)\\b")) %>%   # Filter out bigrams containing common stop words
       arrange(desc(freq)) %>%
-      head(10)
+      head(5)
     
     ggplot(top_bigrams, aes(x = reorder(ngrams, -freq), y = freq)) +
       geom_bar(stat = "identity", fill = "#00a6a6") +
       labs(
-        title = "Top 10 Most Frequent Bigrams (Web URLs)",
+        title = "Top 5 Most Frequent Bigrams (Web URLs)",
         x = "Bigram",
         y = "Frequency"
       ) +
@@ -283,15 +304,17 @@ public_server <- function(input, output, session) {
     } else {
       top_bigrams <- ngram(scraped_pdfs(), n = 2) %>%
         get.phrasetable() %>%
-        filter(!str_detect(ngrams, paste(stop_words_custom, collapse = "|")),  # Filter out bigrams containing custom stop words
+        filter(!str_detect(ngrams, paste(stop_words_pdfs, collapse = "|")),  # Filter out bigrams containing custom stop words
                !str_detect(ngrams, "\\b(?:the|of|on|in|for|to)\\b")) %>%   # Filter out bigrams containing common stop words
         arrange(desc(freq)) %>%
-        head(10)
+        head(5)
+      
+      print(top_bigrams)
       
       ggplot(top_bigrams, aes(x = reorder(ngrams, -freq), y = freq)) +
         geom_bar(stat = "identity", fill = "#00a6a6") +
         labs(
-          title = "Top 10 Most Frequent Bigrams (PDFs)",
+          title = "Top 5 Most Frequent Bigrams (PDFs)",
           x = "Bigram",
           y = "Frequency"
         ) +
