@@ -1,8 +1,26 @@
-library(shiny)
-library(leaflet)
-library(wordcloud)
-library(tm)
-library(bslib)
+# Libraries for creating web applications
+library(shiny)       # For creating web applications
+library(leaflet)     # For interactive maps
+library(wordcloud)   # For creating word clouds
+library(tm)          # For text mining
+library(bslib)       # For Bootstrap-based web pages
+library(stringr)
+
+# Libraries for data manipulation and visualization
+library(tidyverse)   # For data manipulation and visualization
+library(rvest)       # For web scraping
+
+# Additional visualization and data manipulation libraries
+library(RColorBrewer) # For color palettes
+library(ngram)        # For extracting n-grams
+library(httr)         # For HTTP requests
+library(ggplot2)      # For plotting
+library(igraph)       # For network graphs
+library(treemap)      # For treemaps
+library(gridExtra)    # For arranging multiple plots
+
+# Library for working with PDF files
+library(pdftools)    # For working with PDF files
 
 # Source UI and server files
 source("1_ota/server_travel_agencies.R")
@@ -96,7 +114,7 @@ ui <- tagList(
                   style = "float: right; margin-left: 10px;"
                 )
               ),
-              tags$p("© 2024 Booking's SCIence. All rights reserved.", style = "margin-top: 5px; font-size: 10px; color: #555;")
+              tags$p("© 2024 Booking's SCIence. All rights reserved.", style = "margin-top: 5px; margin-bottom:0px; font-size: 8px; color: #555;")
   )
 )
 
