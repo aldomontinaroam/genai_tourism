@@ -1,3 +1,4 @@
+# Load data and define global variables
 data <- read.csv("4_public/data/geocoded_.csv", row.names = NULL, stringsAsFactors = FALSE, sep = ",")
 public_urls <- c(
   "https://www.intentful.ai/blog/100-generative-ai-use-cases-for-dmo-and-travel-brands",
@@ -26,9 +27,6 @@ stop_words_custom <- c(
 
 # Define server function
 public_server <- function(input, output, session) {
-  
-  # Load data
-  data <- read.csv("4_public/data/geocoded_.csv", row.names = NULL, stringsAsFactors = FALSE, sep = ",")
   
   # Reactive expression for filtered cities based on selected region
   filtered_cities <- reactive({
@@ -71,7 +69,7 @@ public_server <- function(input, output, session) {
     leaflet() %>%
       addTiles(urlTemplate = "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png") %>% # Change map tiles
       setView(lng = mean(filtered_data()$original_longitude), lat = mean(filtered_data()$original_latitude), zoom = 5) %>% # Set initial view and zoom level
-      addMarkers(lng = filtered_data()$original_longitude, lat = filtered_data()$original_latitude, 
+      addMarkers(lng = filtered_data()$original_longitude, lat = filtered_data()$original_latitude,
                  popup = paste("<b>DMO:</b>", filtered_data()$original_dmo, "<br>", filtered_data()$formatted),
                  icon = customIcon) # Customize popup content
   })
@@ -117,11 +115,14 @@ public_server <- function(input, output, session) {
     return(text)
   }
   
-  
   # Function to scrape and clean text from URLs
   scrape_and_clean <- function(url) {
     tryCatch({
-      page <- read_html(url)
+      page <- try(read_html(url), silent = TRUE)
+      if (inherits(page, "try-error")) {
+        warning("Invalid URL or website not accessible:", url)
+        return("")
+      }
       all_text <- page %>%
         html_nodes("body") %>%
         html_text() %>%
@@ -138,7 +139,9 @@ public_server <- function(input, output, session) {
       cleaned_text <- removePunctuation(cleaned_text)
       cleaned_text <- removeNumbers(cleaned_text)
       cleaned_text <- removeWords(cleaned_text, c(stopwords("en"), stop_words_custom))
-      cleaned_text <- remove_stop_bigrams(cleaned_text)  # Remove stop bigrams
+      cleaned_text <- remove_stop_bigrams(cleaned_text)
+      
+      
       cleaned_text <- stripWhitespace(cleaned_text)
       
       if (nchar(cleaned_text) == 0) {
@@ -174,7 +177,6 @@ public_server <- function(input, output, session) {
     )
   }
   
-  
   # Function to scrape and clean text from a list of URLs
   scrape_and_clean_urls <- function(urls) {
     combined_text <- sapply(urls, scrape_and_clean)
@@ -182,7 +184,7 @@ public_server <- function(input, output, session) {
     
     # Remove stop words and bigrams containing stop words
     all_clean_text <- removeWords(all_clean_text, c(stopwords("en"), stop_words_custom))
-    all_clean_text <- remove_stop_bigrams(all_clean_text)  # Remove stop bigrams
+    all_clean_text <- remove_stop_bigrams(all_clean_text)
     # Apply remove_unwanted_patterns to clean text
     all_clean_text <- remove_unwanted_patterns(all_clean_text)
     
@@ -196,7 +198,7 @@ public_server <- function(input, output, session) {
     
     # Remove stop words and bigrams containing stop words
     all_clean_text <- removeWords(all_clean_text, c(stopwords("en"), stop_words_custom))
-    all_clean_text <- remove_stop_bigrams(all_clean_text)  # Remove stop bigrams
+    all_clean_text <- remove_stop_bigrams(all_clean_text)
     # Apply remove_unwanted_patterns to clean text
     all_clean_text <- remove_unwanted_patterns(all_clean_text)
     
@@ -273,7 +275,6 @@ public_server <- function(input, output, session) {
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
   })
-  
   
   output$pdfs_barplot <- renderPlot({
     req(scraped_pdfs()) # Ensure scraped data is available
