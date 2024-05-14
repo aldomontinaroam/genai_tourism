@@ -21,6 +21,9 @@ library(gridExtra)    # For arranging multiple plots
 
 # Library for working with PDF files
 library(pdftools)    # For working with PDF files
+library(plotly)
+library(shinyBS)
+library(ggwordcloud)
 
 # Source UI and server files
 source("1_ota/server_travel_agencies.R")
