@@ -10,11 +10,11 @@ pdf_folder <- "4_public/data/papers"
 pdf_files_public <- list.files(path = pdf_folder, pattern = "\\.pdf$", full.names = TRUE)
 
 public_ui <- fluidPage(
-  titlePanel("Can Destination Management Organizations (DMO) use Generative AI to improve efficacy in attracting tourists?"),
+  titlePanel("Destination Management Organizations (DMOs)"),
   sidebarLayout(
     sidebarPanel(
       conditionalPanel(
-        condition = "input.tabs == 'Map'",  # Change 'map' to 'Map'
+        condition = "input.tabs == 'DMOs in Italy'",  # Change 'map' to 'Map'
         selectInput("selected_region", "Select Region:", choices = c("All", unique(data$state))),
         selectInput("selected_city", "Select City:", choices = NULL)
       )
@@ -22,17 +22,22 @@ public_ui <- fluidPage(
     mainPanel(
       tabsetPanel(
         id = "tabs",  # Add id to tabsetPanel
-        tabPanel("Map", leafletOutput("public_map")),
-        tabPanel("Word Clouds",
+        tabPanel("DMOs in Italy", leafletOutput("public_map")),
+        tabPanel("Web",
                  fluidRow(
                    column(width = 6, plotOutput("word_cloud_web_urls")),
-                   column(width = 6, plotOutput("word_cloud_pdfs"))
+                   column(6, plotOutput("web_urls_barplot"))
                  )
         ),
-        tabPanel("Bar Plots",
+        tabPanel("Literature",
                  fluidRow(
-                   column(6, plotOutput("web_urls_barplot")),
+                   column(width = 6, plotOutput("word_cloud_pdfs")),
                    column(6, plotOutput("pdfs_barplot"))
+                 )
+        ),
+        tabPanel("Tools",
+                 fluidRow(
+                   column(width = 6, plotlyOutput("treemap_tools"))
                  )
         )
       )

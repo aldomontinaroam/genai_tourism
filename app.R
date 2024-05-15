@@ -5,6 +5,7 @@ library(wordcloud)   # For creating word clouds
 library(tm)          # For text mining
 library(bslib)       # For Bootstrap-based web pages
 library(stringr)
+library(wordcloud2)
 
 # Libraries for data manipulation and visualization
 library(tidyverse)   # For data manipulation and visualization
@@ -24,6 +25,7 @@ library(pdftools)    # For working with PDF files
 library(plotly)
 library(shinyBS)
 library(ggwordcloud)
+library(htmlwidgets)
 
 # Source UI and server files
 source("1_ota/server_travel_agencies.R")
@@ -80,37 +82,60 @@ server <- function(input, output, session) {
 
 # Define UI for application
 ui <- fluidPage(
-  theme = bs_theme(version = 5, bootswatch = "morph")|>
-    bslib::bs_add_rules(
-      rules = "
-                    .navbar.navbar-default {
-                        background-color: #bbdef0 !important;
-                        color: #151B54 !important;
-                    }
-                  
-                    "
-    ),
-  tags$style(HTML("
+  theme = bs_theme(version = 5, bootswatch = "morph") |> bslib::bs_add_rules(
+    rules = "
+      .navbar.navbar-default {
+        background-color: #bbdef0 !important;
+        color: #151B54 !important;
+        text-align:center !important;
+        margin:auto !important; 
+        display:flex !important; 
+        justify-content:center !important; 
+        align-items:center !important
+      }
+      .navbar-nav {
+        width: 100%;
+        justify-content: center !important;
+      }
+      .nav-item {
+        flex: 1;
+        text-align: center;
+        font-size: 25px !important;
+      }
       .footer {
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
         background-color: #bbdef0;
-        padding: 5px;
+        padding: 10px 0;
         text-align: center;
         color: #03003B;
+        z-index: 999; /* Ensures footer stays on top of other content */
       }
-    ")),
-  tags$img(src = "logo_bsci-removebg-preview.png", height = "60px", style = "text-align:center;margin:auto; display:flex; justify-content:center; align-items:center"),  # Add your logo here
+      body {
+        margin-bottom: 70px; /* Adjust this value to leave space between body and footer */
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensure the content fills the viewport height */
+      }
+      .main-content {
+        flex: 1; /* Allow the main content to grow and fill the available space */
+      }
+    "
+  ),
+  tags$img(src = "logo_bsci-removebg-preview.png", height = "80px", style = "text-align:center;margin-left:auto; margin-right:auto; margin-top: 20px; margin-bottom:20px; display:flex; justify-content:center; align-items:center"),  # Add your logo here
   navbarPage(
-    title = "SOTA GenAI in Tourism",
+    title=NULL,
     tabPanel("Travel Agencies", travel_agencies_ui),
     tabPanel("Accommodation Businesses", accommodation_businesses_ui),
     tabPanel("Countries", countries_ui),
-    tabPanel("Public", public_ui),
+    tabPanel("DMO", public_ui),
     tabPanel("Tourist", tourist_ui),
     tabPanel("Rights", rights_ui)
+  ),
+  div(class = "main-content",
+      # Main content goes here
   ),
   tags$footer(class = "footer",
               tags$div(
@@ -127,9 +152,8 @@ ui <- fluidPage(
   )
 )
 
-
-
 # Run the application
 shinyApp(ui = ui, server = server)
+
 
 

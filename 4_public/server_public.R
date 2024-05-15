@@ -10,6 +10,8 @@ public_urls <- c(
 pdf_folder <- "4_public/data/papers"
 pdf_files_public <- list.files(path = pdf_folder, pattern = "\\.pdf$", full.names = TRUE)
 
+custom_palette <- c("#bbdef0", "#00a6a6", "#efca08", "#f49f0a", "#f08700")
+
 # Load custom stop words
 stop_words_custom <- c(
   "tourism", "tourist", "tourists", "destination", "destinations", "travel", "traveller", "travellers",
@@ -23,7 +25,8 @@ stop_words_custom <- c(
   "generated", "generation", "generating", "generates", "generate",
   "creating", "create", "created", "creation", "creates",
   "local", "locals", "locally", "locale", "locales",
-  "cdata", "var", "ucbutton", "typeubutton", "the", "this", "like", "data", "generative"
+  "cdata", "var", "ucbutton", "typeubutton", "the", "this", "like", "data", "generative",
+  "us"
 )
 
 stop_words_pdfs <- c(
@@ -38,7 +41,8 @@ stop_words_pdfs <- c(
   "generated", "generation", "generating", "generates", "generate",
   "creating", "create", "created", "creation", "creates",
   "local", "locals", "locally", "locale", "locales",
-  "-May-", "formatThis"
+  "-May-", "formatThis", "the", "generative", "this", "formatfigure", "prebensen",
+  "zhang", "state", "journal", "accessed"
   
 )
 
@@ -128,7 +132,8 @@ public_server <- function(input, output, session) {
       "\\,\\s*\\)",  # Remove , ) patterns
       "\\s*\\,\\s*",  # Remove multiple consecutive commas
       "\\s*\\;\\s*",  # Remove multiple consecutive semicolons
-      "\\s*\\:\\s*"  # Remove multiple consecutive colons
+      "\\s*\\:\\s*",  # Remove multiple consecutive colons
+      "\\(p \\)" # Remove (p ) pattern
     )
     # Remove patterns from text
     for (pattern in patterns) {
@@ -181,11 +186,15 @@ public_server <- function(input, output, session) {
     combined_text <- sapply(pdf_files, extract_text_from_local_pdf)
     all_clean_text <- paste(combined_text, collapse = " ")
     
+    # Convert text to lowercase before removing stop words
+    all_clean_text <- tolower(all_clean_text)
+    
     # Remove stop words and bigrams containing stop words
     all_clean_text <- removeWords(all_clean_text, c(stopwords("en"), stop_words_pdfs))
     all_clean_text <- remove_stop_bigrams(all_clean_text)
+    
     # Apply remove_unwanted_patterns to clean text
-    all_clean_text <- remove_unwanted_patterns(all_clean_text) # Add this line
+    all_clean_text <- remove_unwanted_patterns(all_clean_text)
     
     return(all_clean_text)
   }
@@ -228,38 +237,42 @@ public_server <- function(input, output, session) {
   
   # Word cloud for scraped web URLs
   output$word_cloud_web_urls <- renderPlot({
-    req(input$selected_region) # Make sure a region is selected
+    req(input$selected_region)
     all_clean_text <- scrape_and_clean_urls(public_urls)
-    wordcloud(
-      all_clean_text,
-      max.words = 100,
-      random.order = FALSE,
-      colors = c("#bbdef0", "#00a6a6", "#efca08", "#f49f0a", "#f08700"),
-      scale = c(3, 0.5),
-      main = "Word Cloud (Web URLs)"
-    )
+    wordcloud(all_clean_text, max.words = 20, random.order = FALSE,
+              colors = custom_palette, scale = c(3, 0.5), 
+              main = "Word Cloud (Web URLs)",  # Clear and concise title
+              theme = theme_minimal() +
+                theme(panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(),
+                      axis.text = element_blank(),
+                      axis.ticks = element_blank(),
+                      plot.title = element_text(color = "black"))) # Adjust title color
   })
   
+  
   output$word_cloud_pdfs <- renderPlot({
-    req(input$selected_region) # Make sure a region is selected
+    req(input$selected_region)
     if (length(pdf_files_public) == 0) {
-      plot(1, type = "n", xlab = "", ylab = "", main = "No PDF files found")
+      plot(1, type = "n", xlab = "", ylab = "", main = "No PDFs")
     } else {
       all_clean_text <- scrape_and_clean_pdfs(pdf_files_public)
       if (nchar(all_clean_text) > 0) {
-        wordcloud(
-          all_clean_text,
-          max.words = 100,
-          random.order = FALSE,
-          colors = c("#bbdef0", "#00a6a6", "#efca08", "#f49f0a", "#f08700"),
-          scale = c(3, 0.5),
-          main = "Word Cloud (PDFs)"
-        )
+        wordcloud(all_clean_text, max.words = 20, random.order = FALSE,
+                  colors = custom_palette, scale = c(3, 0.5),
+                  main = "Word Cloud (PDFs)",  # Clear and concise title
+                  theme = theme_minimal() +
+                    theme(panel.grid.major = element_blank(),
+                          panel.grid.minor = element_blank(),
+                          axis.text = element_blank(),
+                          axis.ticks = element_blank(),
+                          plot.title = element_text(color = "black"))) # Adjust title color
       } else {
-        plot(1, type = "n", xlab = "", ylab = "", main = "No text extracted from PDFs")
+        plot(1, type = "n", xlab = "", ylab = "", main = "No Text from PDFs")
       }
     }
   })
+  
   
   # BAR PLOTS ===============================================
   # Reactive expression for scraped web URLs
@@ -276,50 +289,133 @@ public_server <- function(input, output, session) {
     return(all_clean_text)
   })
   
-  # Bar plot for web URLs
   output$web_urls_barplot <- renderPlot({
-    req(scraped_web_urls()) # Ensure scraped data is available
+    req(scraped_web_urls())
     top_bigrams <- ngram(scraped_web_urls(), n = 2) %>%
       get.phrasetable() %>%
-      filter(!str_detect(ngrams, paste(stop_words_custom, collapse = "|")),  # Filter out bigrams containing custom stop words
-             !str_detect(ngrams, "\\b(?:the|of|on|in|for|to)\\b")) %>%   # Filter out bigrams containing common stop words
+      filter(!str_detect(ngrams, paste(stop_words_custom, collapse = "|")),
+             !str_detect(ngrams, "\\b(?:the|of|on|in|for|to)\\b")) %>%
       arrange(desc(freq)) %>%
-      head(5)
+      head(5)  # Increased to display more top bigrams
     
-    ggplot(top_bigrams, aes(x = reorder(ngrams, -freq), y = freq)) +
-      geom_bar(stat = "identity", fill = "#00a6a6") +
+    ggplot(top_bigrams, aes(x = reorder(ngrams, freq), y = freq, fill = ngrams)) +
+      geom_bar(stat = "identity", width = 0.7) + 
+      geom_text(aes(label = freq), vjust = -0.5, size = 4, color = "black") +
+      scale_fill_manual(values = c(custom_palette[1], custom_palette[2], custom_palette[2], custom_palette[2], custom_palette[2])) +
       labs(
-        title = "Top 5 Most Frequent Bigrams (Web URLs)",
-        x = "Bigram",
-        y = "Frequency"
+        title = "Top Bigrams from Web URLs",
+        x = NULL,  # Remove x-axis label
+        y = "Frequency",
+        caption = "Source: Web URLs"
       ) +
       theme_minimal() +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+      theme(
+        legend.position = "none",  # Remove legend
+        plot.title = element_text(hjust = 0.5),  # Center plot title
+        axis.title.y = element_text(size = 12, vjust = 1.5),  # Adjust y-axis title
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Rotate x-axis labels
+        axis.text.y = element_text(size = 10),  # Adjust y-axis labels
+        panel.grid = element_blank(),  # Remove gridlines
+        plot.caption = element_text(hjust = 1)  # Adjust caption position
+      ) +
+      annotate("text", x = Inf, y = -Inf, hjust = 1, vjust = 0, 
+               label = "Top bigrams provide insights\ninto popular topics from web URLs",
+               color = "black", size = 4, fontface = "italic")  # Add explanatory text
   })
   
   output$pdfs_barplot <- renderPlot({
-    req(scraped_pdfs()) # Ensure scraped data is available
+    req(scraped_pdfs())
     if (nchar(scraped_pdfs()) == 0) {
       plot(1, type = "n", xlab = "", ylab = "", main = "No text extracted from PDFs")
     } else {
       top_bigrams <- ngram(scraped_pdfs(), n = 2) %>%
         get.phrasetable() %>%
-        filter(!str_detect(ngrams, paste(stop_words_pdfs, collapse = "|")),  # Filter out bigrams containing custom stop words
-               !str_detect(ngrams, "\\b(?:the|of|on|in|for|to)\\b")) %>%   # Filter out bigrams containing common stop words
+        filter(!str_detect(ngrams, paste(stop_words_pdfs, collapse = "|")),
+               !str_detect(ngrams, "\\b(?:the|of|on|in|for|to)\\b")) %>%
         arrange(desc(freq)) %>%
-        head(5)
+        head(5)  # Increased to display more top bigrams
       
-      print(top_bigrams)
-      
-      ggplot(top_bigrams, aes(x = reorder(ngrams, -freq), y = freq)) +
-        geom_bar(stat = "identity", fill = "#00a6a6") +
+      ggplot(top_bigrams, aes(x = reorder(ngrams, freq), y = freq, fill = ngrams)) +
+        geom_bar(stat = "identity", width = 0.7) + 
+        geom_text(aes(label = freq), vjust = -0.5, size = 4, color = "black") +
+        scale_fill_manual(values = c(custom_palette[1], custom_palette[2], custom_palette[2], custom_palette[2], custom_palette[2])) +
         labs(
-          title = "Top 5 Most Frequent Bigrams (PDFs)",
-          x = "Bigram",
-          y = "Frequency"
+          title = "Top Bigrams from PDFs",
+          x = NULL,  # Remove x-axis label
+          y = "Frequency",
+          caption = "Source: PDFs"
         ) +
         theme_minimal() +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        theme(
+          legend.position = "none",  # Remove legend
+          plot.title = element_text(hjust = 0.5),  # Center plot title
+          axis.title.y = element_text(size = 12, vjust = 1.5),  # Adjust y-axis title
+          axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Rotate x-axis labels
+          axis.text.y = element_text(size = 10),  # Adjust y-axis labels
+          panel.grid = element_blank(),  # Remove gridlines
+          plot.caption = element_text(hjust = 1)  # Adjust caption position
+        ) +
+        annotate("text", x = Inf, y = -Inf, hjust = 1, vjust = 0, 
+                 label = "Top bigrams provide insights\ninto popular topics from PDF files",
+                 color = "black", size = 4, fontface = "italic")  # Add explanatory text
     }
   })
+  
+  # Leading generative artificial intelligence (AI) tools used for marketing purposes by professionals in the United States as of March 2023
+  output$treemap_tools <- renderPlotly({
+    data <- data.frame(
+      Category = c("ChatGPT", "Copy.ai", "Jasper.ai", "Peppertype.ai", "Lensa", "DALL-E", "Midjourney"),
+      Percentage = c(55, 42, 36, 29, 28, 25, 24),
+      Description = c(
+        "Description for ChatGPT",
+        "Description for Copy.ai",
+        "Description for Jasper.ai",
+        "Description for Peppertype.ai",
+        "Description for Lensa",
+        "Description for DALL-E",
+        "Description for Midjourney"
+      ),
+      Image = c(
+        "chatgpt.png", "copyai.png", "jasperai.png", "peppertypeai.png",
+        "lensa.png", "dalle.png", "midjourney.png"
+      )
+    )
+    
+    # Define the color palette (continuous)
+    color_palette <- colorRampPalette(c("#bbdef0", "#00a6a6"))(nrow(data))
+    
+    plot <- plot_ly(data, type = "treemap", labels = ~Category, parents = "",
+                    values = ~Percentage, marker = list(colors = color_palette),
+                    hoverinfo = "text", text = ~paste0("<b>", Category, "</b><br>", Description)) %>%
+      layout(title = "Generative AI Tools for Marketing", margin = list(l = 0, r = 0, b = 0, t = 40))
+    
+    # Add images for each category
+    for (i in 1:nrow(data)) {
+      plot <- plot %>% add_trace(
+        type = "scatter",
+        mode = "text",
+        x = ~Category[i], y = ~Percentage[i],
+        text = ~"",
+        hoverinfo = "text",
+        textposition = "middle center",
+        showlegend = FALSE,
+        hovertext = paste0("<img src='www/", data$Image[i], "' width='100px'>"),
+        hoverlabel = list(bgcolor = "white", font = list(color = "black"))
+      )
+    }
+    
+    # Add JavaScript to update description on click
+    plot <- htmlwidgets::onRender(plot, '
+  function(el) {
+    el.on("plotly_click", function(data) {
+      var entry = data.points[0].x;
+      var desc = data.points[0].data.text[data.points[0].pointNumber];
+      Plotly.restyle(el.id, "text", [[desc]]);
+    });
+  }
+')
+    
+    plot
+  })
+  
 }
