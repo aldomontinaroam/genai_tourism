@@ -10,3 +10,5 @@ countries_ui <- fluidPage(
     )
   )
 )
+
+# TODO: 3 panels - Barometer, Alex data, Patents text analysis
