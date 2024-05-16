@@ -6,6 +6,7 @@ library(tm)          # For text mining
 library(bslib)       # For Bootstrap-based web pages
 library(stringr)
 library(wordcloud2)
+library(dplyr)
 
 # Libraries for data manipulation and visualization
 library(tidyverse)   # For data manipulation and visualization

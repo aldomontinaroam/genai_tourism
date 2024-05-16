@@ -20,24 +20,41 @@ public_ui <- fluidPage(
       )
     ),
     mainPanel(
+      tags$style(HTML("
+            #plotrow {
+              margin: 20px;
+              padding: 20px;
+            }
+            #second {
+              border: 2px dashed blue;
+            }
+            ")),
       tabsetPanel(
         id = "tabs",  # Add id to tabsetPanel
-        tabPanel("DMOs in Italy", leafletOutput("public_map")),
+        tabPanel("DMOs in Italy", 
+          fluidRow(
+            id="plotrow",
+            column(12, leafletOutput("public_map", width = "100%", height = "600px"))
+            )
+          ),
         tabPanel("Web",
                  fluidRow(
+                   id = "plotrow",
                    column(width = 6, plotOutput("word_cloud_web_urls")),
                    column(6, plotOutput("web_urls_barplot"))
                  )
         ),
         tabPanel("Literature",
                  fluidRow(
+                   id = "plotrow",
                    column(width = 6, plotOutput("word_cloud_pdfs")),
                    column(6, plotOutput("pdfs_barplot"))
                  )
         ),
         tabPanel("Tools",
                  fluidRow(
-                   column(width = 6, plotlyOutput("treemap_tools"))
+                   id = "plotrow",
+                   column(width = 12, plotlyOutput("treemap_tools"))
                  )
         )
       )

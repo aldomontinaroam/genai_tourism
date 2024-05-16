@@ -1,12 +1,79 @@
+custom_palette <- c("#bbdef0", "#00a6a6", "#efca08", "#f49f0a", "#f08700")
+
 # Server logic for Tourist page
 tourist_server <- function(input, output) {
-  # output$tourist_plot <- renderPlot({
-  #   # Generate a mock plot for Tourist
-  #   plot(1:10, type = "o", col = "orange", xlab = "X-axis", ylab = "Y-axis", main = "Tourist")
-  # })
-  # Define the steps in the customer journey
-  # Funzione per creare popup
-  # Funzione per creare popup
+  # Data
+  relevance <- data.frame(
+    phase = c(rep("Dreaming", 18), rep("Planning", 7), rep("Pre-Travel", 7),
+              rep("On-Trip", 6), rep("Post-Travel", 14)),
+    tool = c("Inspirational Photos & Videos", "Interactive Quizzes and Surveys", 
+             "Trendspotting and Discovery", "Nurturing the Dream",
+             "Social media platforms", "Travel blogs and websites", 
+             "Travel influencers", "ChatGPT", "GPT-4", "AlphaCode", 
+             "GitHub Copilot", "Duet AI", "Bard", "ChatSonic", 
+             "Sora", "FutureGAN", "OpenAI's Sora",
+             "ChatGPT Code Interpreter", "Online travel agencies (OTAs)", 
+             "Travel apps", "Travel websites", "Search engines", 
+             "Metasearch engines", "Strategic partnerships with OTAs",
+             "Efficient reservation systems via phone or chat", "Online booking platforms", 
+             "Travel apps", "Travel websites", "Search engines", 
+             "Metasearch engines", "Strategic partnerships with OTAs",
+             "Efficient reservation systems via phone or chat", "Online booking platforms", 
+             "Travel apps", "Travel websites", "Social media platforms", 
+             "Pre-arrival emails", "Hotel mobile apps for personalization",
+             "Social media for last-minute updates or offers", "Social media platforms", 
+             "Travel blogs and websites", "Travel influencers", "ChatGPT", 
+             "GPT-4", "AlphaCode", "GitHub Copilot", "Duet AI", 
+             "Bard", "ChatSonic", "Sora", "FutureGAN", "OpenAI's Sora",
+             "ChatGPT Code Interpreter")[-53] # Remove last element to make lengths match
+  )
+  
+  # Count the number of tools by phase
+  tools_by_phase <- relevance %>%
+    group_by(phase) %>%
+    summarize(number_of_tools = n(), tools = toString(unique(tool)))
+  
+  # Correctly order the phases
+  phase_order <- c("Dreaming", "Planning", "Pre-Travel", "On-Trip", "Post-Travel")
+  tools_by_phase$phase <- factor(tools_by_phase$phase, levels = phase_order)
+  
+  # Prepare the main plot
+  # Prepare the main plot
+  output$main_plot <- renderPlotly({
+    p <- ggplot(tools_by_phase, aes(x = phase, y = number_of_tools, fill = phase)) +
+      geom_col() +
+      labs(title = "Number of Tools for Each Phase",
+           x = "Phase",
+           y = "Number of Tools") +
+      theme_minimal() +
+      scale_fill_manual(values = custom_palette) +
+      guides(fill = FALSE)
+    
+    ggplotly(p) %>%
+      event_register("plotly_click") %>%
+      onRender("
+    function(el, x) {
+      el.on('plotly_click', function(d) {
+        var data = d.points[0].data;
+        var phase = d.points[0].x;
+        var tools = data.text[d.points[0].pointIndex].split('<br>')[2];
+        var popup = $('<div></div>').attr('title', phase).html(tools);
+        $(popup).dialog({
+          height: 300,
+          width: 400,
+          modal: true
+        });
+      });
+    }
+  ")
+  })
+  
+  
+  
+  
+  
+  
+  
   create_popup <- function(id, title, description) {
     showModal(modalDialog(
       title = title,
@@ -64,27 +131,60 @@ tourist_server <- function(input, output) {
   
   # Output dei grafici per ogni fase
   output$plot_phase1 <- renderPlotly({
-    plot_ly(x = ~rnorm(100), type = "histogram")
+    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
+      layout(title = "Plot Phase 1") %>%
+      config(displayModeBar = FALSE)
+    
+    ggplotly(p) %>%
+      layout(title = "Plot Phase 1") %>%
+      config(displayModeBar = FALSE)
   })
   
   output$plot_phase2 <- renderPlotly({
-    plot_ly(x = ~rnorm(100), type = "histogram")
+    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
+      layout(title = "Plot Phase 2") %>%
+      config(displayModeBar = FALSE)
+    
+    ggplotly(p) %>%
+      layout(title = "Plot Phase 2") %>%
+      config(displayModeBar = FALSE)
   })
   
   output$plot_phase3 <- renderPlotly({
-    plot_ly(x = ~rnorm(100), type = "histogram")
+    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
+      layout(title = "Plot Phase 3") %>%
+      config(displayModeBar = FALSE)
+    
+    ggplotly(p) %>%
+      layout(title = "Plot Phase 3") %>%
+      config(displayModeBar = FALSE)
   })
   
   output$plot_phase4 <- renderPlotly({
-    plot_ly(x = ~rnorm(100), type = "histogram")
+    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
+      layout(title = "Plot Phase 4") %>%
+      config(displayModeBar = FALSE)
+    
+    ggplotly(p) %>%
+      layout(title = "Plot Phase 4") %>%
+      config(displayModeBar = FALSE)
   })
   
   output$plot_phase5 <- renderPlotly({
-    plot_ly(x = ~rnorm(100), type = "histogram")
+    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
+      layout(title = "Plot Phase 5") %>%
+      config(displayModeBar = FALSE)
+    
+    ggplotly(p) %>%
+      layout(title = "Plot Phase 5") %>%
+      config(displayModeBar = FALSE)
   })
   
-  # Placeholder per il grafico principale (modificare secondo necessità)
-  output$main_plot <- renderPlotly({
-    plot_ly(x = ~rnorm(100), type = "histogram")
-  })
+  # Apply custom palette to all plots
+  outputOptions(output, "plot_phase1", suspendWhenHidden = FALSE)
+  outputOptions(output, "plot_phase2", suspendWhenHidden = FALSE)
+  outputOptions(output, "plot_phase3", suspendWhenHidden = FALSE)
+  outputOptions(output, "plot_phase4", suspendWhenHidden = FALSE)
+  outputOptions(output, "plot_phase5", suspendWhenHidden = FALSE)
+
 }

@@ -85,15 +85,19 @@ public_server <- function(input, output, session) {
   )
   
   # Render leaflet map
+  # Render leaflet map with margins
+  # Render leaflet map with margins
   output$public_map <- renderLeaflet({
-    req(filtered_data()) # Ensure filtered data is available
+    req(filtered_data())
+    
     leaflet() %>%
-      addTiles(urlTemplate = "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png") %>% # Change map tiles
-      setView(lng = mean(filtered_data()$original_longitude), lat = mean(filtered_data()$original_latitude), zoom = 5) %>% # Set initial view and zoom level
+      addTiles(urlTemplate = "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png") %>%
       addMarkers(lng = filtered_data()$original_longitude, lat = filtered_data()$original_latitude,
                  popup = paste("<b>DMO:</b>", filtered_data()$original_dmo, "<br>", filtered_data()$formatted),
-                 icon = customIcon) # Customize popup content
-  })
+                 icon = customIcon)
+    })
+  
+  
   
   remove_stop_bigrams <- function(text) {
     stop_bigrams <- c("et al", "crossref")  # Define stop bigrams
@@ -234,20 +238,31 @@ public_server <- function(input, output, session) {
     return(all_clean_text)
   }
   
+  # Update word cloud title visibility
+  wordcloud_title <- function(title) {
+    list(
+      title = list(
+        text = title,
+        color = "black",
+        margin = margin(b = 20)  # Add margin to move the title down
+      )
+    )
+  }
   
-  # Word cloud for scraped web URLs
+  
   output$word_cloud_web_urls <- renderPlot({
     req(input$selected_region)
     all_clean_text <- scrape_and_clean_urls(public_urls)
     wordcloud(all_clean_text, max.words = 20, random.order = FALSE,
               colors = custom_palette, scale = c(3, 0.5), 
-              main = "Word Cloud (Web URLs)",  # Clear and concise title
+              main = wordcloud_title("Word Cloud (Web URLs)"), 
               theme = theme_minimal() +
                 theme(panel.grid.major = element_blank(),
                       panel.grid.minor = element_blank(),
                       axis.text = element_blank(),
                       axis.ticks = element_blank(),
-                      plot.title = element_text(color = "black"))) # Adjust title color
+                      plot.title = element_text(color = "black"),
+                      plot.margin = margin(20, 20, 20, 20)))  # Add margin
   })
   
   
@@ -260,13 +275,14 @@ public_server <- function(input, output, session) {
       if (nchar(all_clean_text) > 0) {
         wordcloud(all_clean_text, max.words = 20, random.order = FALSE,
                   colors = custom_palette, scale = c(3, 0.5),
-                  main = "Word Cloud (PDFs)",  # Clear and concise title
+                  main = wordcloud_title("Word Cloud (PDFs)"),
                   theme = theme_minimal() +
                     theme(panel.grid.major = element_blank(),
                           panel.grid.minor = element_blank(),
                           axis.text = element_blank(),
                           axis.ticks = element_blank(),
-                          plot.title = element_text(color = "black"))) # Adjust title color
+                          plot.title = element_text(color = "black"),
+                          plot.margin = margin(20, 20, 20, 20)))
       } else {
         plot(1, type = "n", xlab = "", ylab = "", main = "No Text from PDFs")
       }
@@ -275,6 +291,32 @@ public_server <- function(input, output, session) {
   
   
   # BAR PLOTS ===============================================
+  
+  # Function to create bar plot with decreasing order and different colors for highest bar
+  create_barplot <- function(data, title) {
+    ggplot(data, aes(x = reorder(ngrams, -freq), y = freq, fill = ifelse(freq == max(freq), "Highest", "Other"))) +
+      geom_bar(stat = "identity", width = 0.7) +
+      geom_text(aes(label = freq), vjust = -0.5, size = 4, color = "black") +
+      scale_fill_manual(name = "", values = c("Highest" = custom_palette[1], "Other" = custom_palette[2])) +  # Different color for the highest bar
+      labs(
+        title = title,
+        x = NULL,
+        y = "Frequency"
+      ) +
+      theme_minimal() +
+      theme(
+        legend.position = "none",
+        plot.title = element_text(hjust = 0.5),
+        axis.title.y = element_text(size = 12, vjust = 1.5),
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+        axis.text.y = element_text(size = 10),
+        panel.grid = element_blank(),
+        plot.caption = element_text(hjust = 1),
+        plot.margin = margin(20, 20, 20, 20)
+      )
+  }
+  
+  
   # Reactive expression for scraped web URLs
   scraped_web_urls <- reactive({
     req(input$selected_region) # Make sure a region is selected
@@ -296,31 +338,9 @@ public_server <- function(input, output, session) {
       filter(!str_detect(ngrams, paste(stop_words_custom, collapse = "|")),
              !str_detect(ngrams, "\\b(?:the|of|on|in|for|to)\\b")) %>%
       arrange(desc(freq)) %>%
-      head(5)  # Increased to display more top bigrams
+      head(5)
     
-    ggplot(top_bigrams, aes(x = reorder(ngrams, freq), y = freq, fill = ngrams)) +
-      geom_bar(stat = "identity", width = 0.7) + 
-      geom_text(aes(label = freq), vjust = -0.5, size = 4, color = "black") +
-      scale_fill_manual(values = c(custom_palette[1], custom_palette[2], custom_palette[2], custom_palette[2], custom_palette[2])) +
-      labs(
-        title = "Top Bigrams from Web URLs",
-        x = NULL,  # Remove x-axis label
-        y = "Frequency",
-        caption = "Source: Web URLs"
-      ) +
-      theme_minimal() +
-      theme(
-        legend.position = "none",  # Remove legend
-        plot.title = element_text(hjust = 0.5),  # Center plot title
-        axis.title.y = element_text(size = 12, vjust = 1.5),  # Adjust y-axis title
-        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Rotate x-axis labels
-        axis.text.y = element_text(size = 10),  # Adjust y-axis labels
-        panel.grid = element_blank(),  # Remove gridlines
-        plot.caption = element_text(hjust = 1)  # Adjust caption position
-      ) +
-      annotate("text", x = Inf, y = -Inf, hjust = 1, vjust = 0, 
-               label = "Top bigrams provide insights\ninto popular topics from web URLs",
-               color = "black", size = 4, fontface = "italic")  # Add explanatory text
+    create_barplot(top_bigrams, "Top Bigrams from Web URLs")
   })
   
   output$pdfs_barplot <- renderPlot({
@@ -333,89 +353,59 @@ public_server <- function(input, output, session) {
         filter(!str_detect(ngrams, paste(stop_words_pdfs, collapse = "|")),
                !str_detect(ngrams, "\\b(?:the|of|on|in|for|to)\\b")) %>%
         arrange(desc(freq)) %>%
-        head(5)  # Increased to display more top bigrams
+        head(5)
       
-      ggplot(top_bigrams, aes(x = reorder(ngrams, freq), y = freq, fill = ngrams)) +
-        geom_bar(stat = "identity", width = 0.7) + 
-        geom_text(aes(label = freq), vjust = -0.5, size = 4, color = "black") +
-        scale_fill_manual(values = c(custom_palette[1], custom_palette[2], custom_palette[2], custom_palette[2], custom_palette[2])) +
-        labs(
-          title = "Top Bigrams from PDFs",
-          x = NULL,  # Remove x-axis label
-          y = "Frequency",
-          caption = "Source: PDFs"
-        ) +
-        theme_minimal() +
-        theme(
-          legend.position = "none",  # Remove legend
-          plot.title = element_text(hjust = 0.5),  # Center plot title
-          axis.title.y = element_text(size = 12, vjust = 1.5),  # Adjust y-axis title
-          axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Rotate x-axis labels
-          axis.text.y = element_text(size = 10),  # Adjust y-axis labels
-          panel.grid = element_blank(),  # Remove gridlines
-          plot.caption = element_text(hjust = 1)  # Adjust caption position
-        ) +
-        annotate("text", x = Inf, y = -Inf, hjust = 1, vjust = 0, 
-                 label = "Top bigrams provide insights\ninto popular topics from PDF files",
-                 color = "black", size = 4, fontface = "italic")  # Add explanatory text
+      create_barplot(top_bigrams, "Top Bigrams from PDFs")
     }
   })
   
+  
+  
   # Leading generative artificial intelligence (AI) tools used for marketing purposes by professionals in the United States as of March 2023
   output$treemap_tools <- renderPlotly({
-    data <- data.frame(
-      Category = c("ChatGPT", "Copy.ai", "Jasper.ai", "Peppertype.ai", "Lensa", "DALL-E", "Midjourney"),
+    # Define data
+    tools <- data.frame(
+      Category = c(
+        "ChatGPT",
+        "Copy.ai",
+        "Jasper.ai",
+        "Peppertype.ai",
+        "Lensa",
+        "DALL-E",
+        "Midjourney"
+      ),
       Percentage = c(55, 42, 36, 29, 28, 25, 24),
       Description = c(
-        "Description for ChatGPT",
-        "Description for Copy.ai",
-        "Description for Jasper.ai",
-        "Description for Peppertype.ai",
-        "Description for Lensa",
-        "Description for DALL-E",
-        "Description for Midjourney"
+        "Chatbot and conversational AI",
+        "Product descriptions and content",
+        "Blog posts and articles",
+        "Content creation optimization",
+        "Image editing app",
+        "Text-to-Image",
+        "Text-to-Image"
       ),
       Image = c(
-        "chatgpt.png", "copyai.png", "jasperai.png", "peppertypeai.png",
-        "lensa.png", "dalle.png", "midjourney.png"
+        "chatgpt.png",
+        "copyai.png",
+        "jasperai.png",
+        "peppertypeai.png",
+        "lensa.png",
+        "dalle.png",
+        "midjourney.png"
       )
     )
     
-    # Define the color palette (continuous)
-    color_palette <- colorRampPalette(c("#bbdef0", "#00a6a6"))(nrow(data))
+    # Define the color palette
+    color_palette <- colorRampPalette(c("#bbdef0", "#00a6a6"))(nrow(tools))
     
-    plot <- plot_ly(data, type = "treemap", labels = ~Category, parents = "",
-                    values = ~Percentage, marker = list(colors = color_palette),
-                    hoverinfo = "text", text = ~paste0("<b>", Category, "</b><br>", Description)) %>%
-      layout(title = "Generative AI Tools for Marketing", margin = list(l = 0, r = 0, b = 0, t = 40))
-    
-    # Add images for each category
-    for (i in 1:nrow(data)) {
-      plot <- plot %>% add_trace(
-        type = "scatter",
-        mode = "text",
-        x = ~Category[i], y = ~Percentage[i],
-        text = ~"",
-        hoverinfo = "text",
-        textposition = "middle center",
-        showlegend = FALSE,
-        hovertext = paste0("<img src='www/", data$Image[i], "' width='100px'>"),
-        hoverlabel = list(bgcolor = "white", font = list(color = "black"))
-      )
-    }
-    
-    # Add JavaScript to update description on click
-    plot <- htmlwidgets::onRender(plot, '
-  function(el) {
-    el.on("plotly_click", function(data) {
-      var entry = data.points[0].x;
-      var desc = data.points[0].data.text[data.points[0].pointNumber];
-      Plotly.restyle(el.id, "text", [[desc]]);
-    });
-  }
-')
-    
-    plot
+    plot_ly(tools, type = "treemap", labels = ~Category,
+            parents = "", values = ~Percentage,
+            hoverinfo = "text", text = ~paste(Percentage, "%<br>", Description),
+            marker = list(colors = color_palette),
+            textfont = list(color = "black", size = 14, family = "Verdana", 
+                            weight = "bold")) %>%
+      layout(title = "AI Tools by Usage",
+             font = list(color = "black", size = 12, family = "Verdana"))
   })
   
 }
