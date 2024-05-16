@@ -251,46 +251,65 @@ public_server <- function(input, output, session) {
   
   
   output$word_cloud_web_urls <- renderPlot({
-    req(input$selected_region)
     all_clean_text <- scrape_and_clean_urls(public_urls)
-    wordcloud(all_clean_text, max.words = 20, random.order = FALSE,
-              colors = custom_palette, scale = c(3, 0.5), 
-              main = wordcloud_title("Word Cloud (Web URLs)"), 
-              theme = theme_minimal() +
-                theme(panel.grid.major = element_blank(),
-                      panel.grid.minor = element_blank(),
-                      axis.text = element_blank(),
-                      axis.ticks = element_blank(),
-                      plot.title = element_text(color = "black"),
-                      plot.margin = margin(20, 20, 20, 20)))  # Add margin
+    
+    # Create word cloud
+    wordcloud_obj <- wordcloud(all_clean_text, max.words = 20, random.order = FALSE,
+                               figPath = "wc1.png",
+                               colors = custom_palette, scale = c(5, 1),
+                               main = list(text = "<b>Word Cloud (Web URLs)</b>", color = "black"), 
+                               theme = theme_minimal() +
+                                 theme(panel.grid.major = element_blank(),
+                                       panel.grid.minor = element_blank(),
+                                       axis.text = element_blank(),
+                                       axis.ticks = element_blank(),
+                                       plot.title = element_text(color = "black"),
+                                       plot.margin = margin(10, 10, 10, 10)))  # Adjust margin
+    
+    # Ensure horizontal layout for the most frequent word
+    wordcloud_obj$layout$rotation <- 0
+    
+    
+    
+    # Plot the word cloud
+    print(wordcloud_obj)
   })
   
-  
   output$word_cloud_pdfs <- renderPlot({
-    req(input$selected_region)
     if (length(pdf_files_public) == 0) {
-      plot(1, type = "n", xlab = "", ylab = "", main = "No PDFs")
+      plot(1, type = "n", xlab = "", ylab = "", main = "<b>No PDFs</b>")
     } else {
       all_clean_text <- scrape_and_clean_pdfs(pdf_files_public)
       if (nchar(all_clean_text) > 0) {
-        wordcloud(all_clean_text, max.words = 20, random.order = FALSE,
-                  colors = custom_palette, scale = c(3, 0.5),
-                  main = wordcloud_title("Word Cloud (PDFs)"),
-                  theme = theme_minimal() +
-                    theme(panel.grid.major = element_blank(),
-                          panel.grid.minor = element_blank(),
-                          axis.text = element_blank(),
-                          axis.ticks = element_blank(),
-                          plot.title = element_text(color = "black"),
-                          plot.margin = margin(20, 20, 20, 20)))
+        # Create word cloud
+        wordcloud_obj <- wordcloud(all_clean_text, max.words = 20, random.order = FALSE,
+                                   colors = custom_palette, scale = c(5, 1),
+                                   main = list(text = "<b>Word Cloud (PDFs)</b>", color = "black"),
+                                   theme = theme_minimal() +
+                                     theme(panel.grid.major = element_blank(),
+                                           panel.grid.minor = element_blank(),
+                                           axis.text = element_blank(),
+                                           axis.ticks = element_blank(),
+                                           plot.title = element_text(color = "black"),
+                                           plot.margin = margin(10, 10, 10, 10)))  # Adjust margin
+        
+        # Ensure horizontal layout for the most frequent word
+        wordcloud_obj$layout$rotation <- 0
+        
+        # Plot the word cloud
+        print(wordcloud_obj)
       } else {
-        plot(1, type = "n", xlab = "", ylab = "", main = "No Text from PDFs")
+        plot(1, type = "n", xlab = "", ylab = "", main = "<b>No Text from PDFs</b>")
       }
     }
   })
   
   
+  
+  
+  
   # BAR PLOTS ===============================================
+  
   
   # Function to create bar plot with decreasing order and different colors for highest bar
   create_barplot <- function(data, title) {
@@ -299,7 +318,7 @@ public_server <- function(input, output, session) {
       geom_text(aes(label = freq), vjust = -0.5, size = 4, color = "black") +
       scale_fill_manual(name = "", values = c("Highest" = custom_palette[1], "Other" = custom_palette[2])) +  # Different color for the highest bar
       labs(
-        title = title,
+        title = NULL,
         x = NULL,
         y = "Frequency"
       ) +
@@ -308,13 +327,16 @@ public_server <- function(input, output, session) {
         legend.position = "none",
         plot.title = element_text(hjust = 0.5),
         axis.title.y = element_text(size = 12, vjust = 1.5),
-        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+        axis.text.x = element_text(angle = 0, hjust = 0.5, vjust = 0.5, size = 10, face = "bold"), # Zero angle, centered, bold x-axis labels
         axis.text.y = element_text(size = 10),
         panel.grid = element_blank(),
         plot.caption = element_text(hjust = 1),
         plot.margin = margin(20, 20, 20, 20)
-      )
+      ) +
+      scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) # Wrap labels to two lines
   }
+  
+  
   
   
   # Reactive expression for scraped web URLs
@@ -340,7 +362,7 @@ public_server <- function(input, output, session) {
       arrange(desc(freq)) %>%
       head(5)
     
-    create_barplot(top_bigrams, "Top Bigrams from Web URLs")
+    create_barplot(top_bigrams, "Top Bigrams from BLOG POSTS")
   })
   
   output$pdfs_barplot <- renderPlot({
@@ -355,7 +377,7 @@ public_server <- function(input, output, session) {
         arrange(desc(freq)) %>%
         head(5)
       
-      create_barplot(top_bigrams, "Top Bigrams from PDFs")
+      create_barplot(top_bigrams, "Top Bigrams from PAPERS")
     }
   })
   
@@ -407,5 +429,37 @@ public_server <- function(input, output, session) {
       layout(title = "AI Tools by Usage",
              font = list(color = "black", size = 12, family = "Verdana"))
   })
+  
+  output$perceived <- renderPlot({
+    # Create the data frame
+    perceived_impact <- data.frame(
+      Task = c("Marketing content personalization", "Content creation", "Camping creation and optimization",
+               "Data analysis and interpretation", "Predictive analysis and forecasting", "Creative media",
+               "Conversational marketing", "Web, app, and platform creation"),
+      N.A = c(3, 4, 4, 5, 5, 5, 8, 9),
+      LittleImpact = c(16, 13, 20, 12, 14, 24, 22, 24),
+      SomeImpact = c(44, 34, 47, 43, 41, 46, 41, 42),
+      HighImpact = c(37, 49, 29, 38, 40, 25, 29, 25)
+    )
+    
+    # Melt the data frame
+    data_melted <- reshape2::melt(perceived_impact, id.vars = "Task")
+    
+    # Create the plot
+    ggplot(data_melted, aes(x = Task, y = value, fill = variable, label = scales::percent(value/100))) +
+      geom_bar(stat = "identity", position = "stack") +
+      geom_text(position = position_stack(vjust = 0.5), aes(label = scales::percent(value/100)), size = 4, fontface = "bold") +
+      labs(x = "", y = "Share of respondents") +
+      coord_flip() +
+      scale_fill_manual(name = "", values = c("N.A" = "#bbdef0", "LittleImpact" = "#efca08", "SomeImpact" = "#00a6a6", "HighImpact" = "#f08700")) +
+      guides(fill = guide_legend(reverse = TRUE)) +
+      theme_minimal() +
+      theme(legend.position = "bottom",
+            panel.grid.major.y = element_blank(),
+            axis.text.y = element_text(size = 14, face = "bold"),
+            axis.ticks.y = element_blank(),
+            axis.title.y = element_text(size = 16, face = "bold", margin = margin(r = 15)))
+  })
+  
   
 }

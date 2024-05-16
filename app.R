@@ -7,6 +7,7 @@ library(bslib)       # For Bootstrap-based web pages
 library(stringr)
 library(wordcloud2)
 library(dplyr)
+library(reshape2)
 
 # Libraries for data manipulation and visualization
 library(tidyverse)   # For data manipulation and visualization
