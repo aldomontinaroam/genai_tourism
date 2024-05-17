@@ -82,13 +82,13 @@ public_ui <- fluidPage(
                    column(12, leafletOutput("public_map", width = "100%", height = "600px"))
                  )
         ),
-        tabPanel("Web",
+        tabPanel("Web & Literature",
                  fluidRow(
                    id = "titlediv",
                    column(6, 
-                          h4("Most frequent Words in Blog Posts")),
+                          h4("20 Most frequent Words in Blog Posts")),
                    column(6, 
-                          h4("Most Frequent Bigrams in Blog Posts"))
+                          h4("5 Most Frequent Bigrams in Blog Posts"))
                  ),
                  fluidRow(
                    id = "plotrow",
@@ -96,15 +96,13 @@ public_ui <- fluidPage(
                           plotOutput("word_cloud_web_urls")),
                    column(6, 
                           plotOutput("web_urls_barplot"))
-                 )
-        ),
-        tabPanel("Literature",
+                 ),
                  fluidRow(
                    id = "titlediv",
                    column(6, 
-                          h4("Most frequent Words in Scientific Literature")),
+                          h4("20 Most frequent Words in Scientific Literature")),
                    column(6, 
-                          h4("Most Frequent Bigrams in Scientific Literature"))
+                          h4("5 Most Frequent Bigrams in Scientific Literature"))
                  ),
                  fluidRow(
                    id = "plotrow",
@@ -122,7 +120,7 @@ public_ui <- fluidPage(
                    column(width = 12, plotlyOutput("treemap_tools"))
                  )
         ),
-        tabPanel("Perception",
+        tabPanel("Impact",
                  div(
                    id="titlediv",
                    h4("Perceived impact of AI on activities of DMOs"),

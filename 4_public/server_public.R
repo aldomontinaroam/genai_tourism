@@ -311,14 +311,17 @@ public_server <- function(input, output, session) {
   # BAR PLOTS ===============================================
   
   
+  # Define custom palette with the first color as darker
+  custom_palette_bar <- c("#00a6a6", "#bbdef0")
+  
   # Function to create bar plot with decreasing order and different colors for highest bar
   create_barplot <- function(data, title) {
     ggplot(data, aes(x = reorder(ngrams, -freq), y = freq, fill = ifelse(freq == max(freq), "Highest", "Other"))) +
       geom_bar(stat = "identity", width = 0.7) +
       geom_text(aes(label = freq), vjust = -0.5, size = 4, color = "black") +
-      scale_fill_manual(name = "", values = c("Highest" = custom_palette[1], "Other" = custom_palette[2])) +  # Different color for the highest bar
+      scale_fill_manual(name = "", values = c("Highest" = custom_palette_bar[1], "Other" = custom_palette_bar[2])) +  # Different color for the highest bar
       labs(
-        title = NULL,
+        title = title,
         x = NULL,
         y = "Frequency"
       ) +
@@ -426,8 +429,7 @@ public_server <- function(input, output, session) {
             marker = list(colors = color_palette),
             textfont = list(color = "black", size = 14, family = "Verdana", 
                             weight = "bold")) %>%
-      layout(title = "AI Tools by Usage",
-             font = list(color = "black", size = 12, family = "Verdana"))
+      layout(font = list(color = "black", size = 12, family = "Verdana"))
   })
   
   output$perceived <- renderPlot({

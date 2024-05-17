@@ -129,12 +129,12 @@ ui <- fluidPage(
   tags$img(src = "logo_bsci-removebg-preview.png", height = "80px", style = "text-align:center;margin-left:auto; margin-right:auto; margin-top: 20px; margin-bottom:20px; display:flex; justify-content:center; align-items:center"),  # Add your logo here
   navbarPage(
     title=NULL,
+    tabPanel("Tourist", tourist_ui),
+    tabPanel("Rights", rights_ui),
     tabPanel("Travel Agencies", travel_agencies_ui),
     tabPanel("Accommodation Businesses", accommodation_businesses_ui),
     tabPanel("Countries", countries_ui),
-    tabPanel("DMO", public_ui),
-    tabPanel("Tourist", tourist_ui),
-    tabPanel("Rights", rights_ui)
+    tabPanel("DMO", public_ui)
   ),
   div(class = "main-content",
       # Main content goes here
