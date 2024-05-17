@@ -20,35 +20,24 @@ public_ui <- fluidPage(
       ),
       conditionalPanel(
         id="textpanel",
-        condition = "input.tabs == 'Web'",  # Add explanatory text for 'Web' panel
+        condition = "input.tabs == 'Web & Literature'",  
         h4("Word Cloud from Web URLs"),
-        p("This panel displays a word cloud generated from the text scraped from the provided web URLs."),
-        p("It gives an overview of the most frequent words used in the content of the URLs.")
+        p("Blogs focus a lot on the content development and promotional content part, while the scientific literature directly cites the field of marketing, also focusing on controlling visitor flows."),
+        p(strong("Source:")),"Text mining on blog posts with information on AI tools for DMOs and scientific papers on Scopus.",
       ),
       conditionalPanel(
         id="textpanel",
-        condition = "input.tabs == 'Literature'",  # Add explanatory text for 'Literature' panel
-        h4("Word Cloud from PDFs"),
-        p("This panel displays a word cloud generated from the text extracted from the provided PDF files."),
-        p("It provides insights into the most common words found in the literature related to DMOs.")
+        condition = "input.tabs == 'Tools'", 
+        h4("AI Tools"),
+        p("OpenAI dominates the ranking with ChatGPT (currently multi-modal) and DALL-E (text-to-image)."),
+        p(strong("Source:")),"Leading generative artificial intelligence (AI) tools used for marketing purposes by professionals in the United States as of March 2023 [Graph], Botco.ai, May 4, 2023. [Online]. Available: https://www.statista.com/statistics/1386850/generative-ai-tools-marketing-purposes-usa/",
       ),
       conditionalPanel(
         id="textpanel",
-        condition = "input.tabs == 'Tools'",  # Add explanatory text for 'Tools' panel
-        h4("AI Tools by Usage"),
-        p("This panel presents a treemap visualization showcasing various AI tools used for marketing purposes by professionals."),
-        p("It highlights the percentage usage of each tool along with a brief description of its functionality.")
-      ),
-      conditionalPanel(
-        id="textpanel",
-        condition = "input.tabs == 'Perception'",  # Add explanatory text for 'Tools' panel
+        condition = "input.tabs == 'Impact'",
         h4("Perceived Impact of AI on DMOs"),
-        p("Marketing Content Personalization and Content Creation are highly regarded, 
-          while Camping Creation and Optimization is slightly less so. Data Analysis 
-          and Interpretation and Predictive Analysis and Forecasting are seen as valuable 
-          but with some distinctions. Creative Media holds promise but with reservations. 
-          Conversational Marketing and Web, App, and Platform Creation are viewed as highly 
-          impactful, indicating recognition of AI's potential in enhancing interactive experiences and digital platforms.")
+        p("Content creation is perceived as the most relevant area with the implementation of generative AI tools, followed by personalization of marketing campaigns."),
+        p(strong("Source:")),"Perceived impact of artificial intelligence (AI) on activities of destination marketing organizations (DMOs) worldwide as of September 2023 [Graph], Sojern, November 20, 2023. [Online]. Available: https://www.statista.com/statistics/1425416/ai-impact-activities-dmos-worldwide/",
       )
     ),
     mainPanel(
@@ -113,7 +102,7 @@ public_ui <- fluidPage(
         tabPanel("Tools",
                  div(
                    id="titlediv",
-                   h4("AI Tools by Usage"),
+                   h4("AI Tools by Usage in Marketing"),
                  ),
                  fluidRow(
                    id = "plotrow",

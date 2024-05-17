@@ -447,6 +447,9 @@ public_server <- function(input, output, session) {
     # Melt the data frame
     data_melted <- reshape2::melt(perceived_impact, id.vars = "Task")
     
+    # Reorder the Task factor levels based on HighImpact
+    data_melted$Task <- factor(data_melted$Task, levels = data_melted$Task[order(perceived_impact$HighImpact)])
+    
     # Create the plot
     ggplot(data_melted, aes(x = Task, y = value, fill = variable, label = scales::percent(value/100))) +
       geom_bar(stat = "identity", position = "stack") +
@@ -462,6 +465,9 @@ public_server <- function(input, output, session) {
             axis.ticks.y = element_blank(),
             axis.title.y = element_text(size = 16, face = "bold", margin = margin(r = 15)))
   })
+  
+  
+  
   
   
 }
