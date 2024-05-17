@@ -13,6 +13,7 @@ custom_palette <- c("#bbdef0", "#00a6a6", "#efca08", "#f49f0a", "#f08700")
 
 # Server logic for Countries page
 countries_server <- function(input, output) {
+  
   output$countries_plot <- renderPlot({
     # Data
     data <- data.frame(
@@ -31,20 +32,26 @@ countries_server <- function(input, output) {
     # Plot
     ggplot(data_long, aes(x = value, y = Country, fill = variable)) +
       geom_bar(stat = "identity", position = "fill") +
-      geom_text(aes(label = paste0(value, "%")), position = position_fill(vjust = 0.5), size = 3) +
+      geom_text(aes(label = paste0(value, "%")), position = position_fill(vjust = 0.5), size = 7) +  # Adjusted font size
       scale_fill_manual(values = c("#00a6a6", "#bbdef0","#f49f0a"),
                         name = "Legend",
                         labels = c("Yes, we already use AI", "Not yet, but we plan to use AI in the next 6 months", "No, we do not currently use or plan to use AI", "Don't know")) +
-      labs(x = "Country", y = "Percentage", title = "Current use of AI/planned use of AI in the next 6 months") +
+      labs(x = "Country", y = "Percentage") +  # Removed title
       theme_minimal() +
       theme(legend.position = "bottom",
-            axis.text.x = element_text(angle = 45, hjust = 1))
+            axis.text.x = element_text(angle = 45, hjust = 1, size = 12),  # Increased font size
+            axis.text.y = element_text(size = 12),  # Increased font size for y-axis labels
+            axis.title = element_text(size = 14),  # Increased font size for axis labels
+            legend.text = element_text(size = 12),  # Increased font size for legend text
+            legend.title = element_text(size = 14))  # Increased font size for legend title
   })
+  
+  
   
   output$plot_output <- renderUI({
     analysis_type <- input$analysis
     
-    if (analysis_type == "Trend and Legal Status Analysis") {
+    if (analysis_type == "Legal Status") {
       plotlyOutput("trend_plot")
     } else if (analysis_type == "Text Analysis") {
       plotOutput("wordcloud_plot")
@@ -83,21 +90,36 @@ countries_server <- function(input, output) {
   
   output$trend_plot <- renderPlotly({
     tryCatch({
+      # Count patents by Legal Status and Year
       plot_data <- patent_data %>%
-        count(Legal.Status) %>%
-        arrange(desc(n))
+        mutate(Year = lubridate::year(Publication.Date)) %>%
+        count(Year, Legal.Status) %>%
+        arrange(Year, desc(n))
       
+      # Calculate overall number of patents by year
+      overall_patents <- plot_data %>%
+        group_by(Year) %>%
+        summarise(Overall = sum(n))
+      
+      # Combine overall number of patents with existing data
+      plot_data <- bind_rows(plot_data, overall_patents %>% mutate(Legal.Status = "Overall"))
+      
+      print(plot_data)
       # Highlighting the highest bar
-      plot_data$color <- ifelse(plot_data$n == max(plot_data$n), '#00a6a6', '#bbdef0')
+      plot_data$color <- ifelse(plot_data$Legal.Status == "Overall", '#f49f0a', '#00a6a6')
       
-      plot_ly(plot_data, y = ~Legal.Status, x = ~n, type = 'bar', orientation = 'h',
-              marker = list(color = plot_data$color)) %>%
-        layout(title = "Trend and Legal Status Analysis",
+      plot_ly(plot_data, y = ~factor(Year), x = ~n, type = 'bar', color = ~Legal.Status,
+              colors = c("#3182bd", "#6baed6", "#9ecae1", "#bbdef0", "#00a6a6", "#efca08", "#f49f0a", "#f08700"),
+              orientation = 'h') %>%
+        layout(title = NULL,
                xaxis = list(title = "Count"),
-               yaxis = list(title = "Legal Status"))
+               yaxis = list(title = "Year"),
+               barmode = 'stack')
     }, error = function(e) {
       print(e)
       return(NULL) # Return NULL if there's an error
     })
   })
+  
+  
 }

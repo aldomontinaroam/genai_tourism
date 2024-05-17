@@ -1,0 +1,13 @@
+project,company,group,type,provider,date
+AI Trip Planner,Booking,Booking Holding,"app/web",OpenAI,2023-06-28
+Kayak Plugin,Kayak,Booking Holding,"ChatGPT plugin",OpenAI,2023-03-23
+Ask KAYAK,Kayak,Booking Holding,"app/web",OpenAI,2024-03-05
+GamePlanner.AI,Airbnb,Airbnb,NA,acquisition,2023-11-14
+eDreams AI,eDreams,eDreams ODIGEO,NA,Google,2023-05-04
+TripGenie,Trip.com,Trip.com,"app/web",OpenAI,2023-07-25
+TripGen,Trip.com,Trip.com,"app/web",OpenAI,2023-02-16
+Project Explorer,Expedia,Expedia Group,"app/web",OpenAI,2023-09-21
+Expedia Plugin,Expedia,Expedia Group,"ChatGPT plugin",OpenAI,2023-03-23
+AskLayla,Beautiful Destinations,NA,"app/web",OpenAI,2023-11-29
+Trips,Tripadvisor,Tripadvisor,"app/web",OpenAI,2023-07-19
+Romie AI,Expedia,Expedia Group,"app/web",OpenAI,2024-05-14

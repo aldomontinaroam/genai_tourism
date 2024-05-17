@@ -52,6 +52,34 @@ tourist_ui <- fluidPage(
     .phase3 { background-image: url('pre-trip.png'); }
     .phase4 { background-image: url('on-trip.png'); }
     .phase5 { background-image: url('post-trip.png'); }
+    
+    .modal-content {
+    width: 800px !important;
+    }
+   
+   .modal-dialog{
+   display: flex;
+   align-items:center;
+   justify-content:center;
+   width: 100% !important;
+   max-width: none !important;
+   }
+   
+   #vr-img{
+    align-items:center !important;
+    justify-content:center !important;
+    display: flex !important;
+   }
+   
+   .modal-content img{
+   margin:auto !important;
+   }
+   
+   #mainplot img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
   ")),
   
   div(class = "journey-container",
@@ -70,7 +98,8 @@ tourist_ui <- fluidPage(
       )
   ),
   div(id = "mainplot",
-    plotlyOutput("main_plot")
+      img(src="customer_journey_phases.png"),
+      p("Source: https://www.mckinsey.com/industries/travel-logistics-and-infrastructure/our-insights/the-promise-of-travel-in-the-age-of-ai")
   )
   
 )

@@ -1,0 +1,97 @@
+setting,method,llm,set,metric,value
+"tool+planning","ReAct","Mistral-7B-32K","validation","delivery_rate",8.9
+"tool+planning","ReAct","Mistral-7B-32K","validation","commonsense_pass_rate",5.9
+"tool+planning","ReAct","Mistral-7B-32K","validation","hard_constraint_pass_rate",0
+"tool+planning","ReAct","Mistral-7B-32K","validation","final_pass_rate",0
+"tool+planning","ReAct","Mistral-7B-32K","test","delivery_rate",7
+"tool+planning","ReAct","Mistral-7B-32K","test","commonsense_pass_rate",4.8
+"tool+planning","ReAct","Mistral-7B-32K","test","hard_constraint_pass_rate",0
+"tool+planning","ReAct","Mistral-7B-32K","test","final_pass_rate",0
+"tool+planning","ReAct","Mixtral-8x7B-MoE","validation","delivery_rate",49.4
+"tool+planning","ReAct","Mixtral-8x7B-MoE","validation","commonsense_pass_rate",30
+"tool+planning","ReAct","Mixtral-8x7B-MoE","validation","hard_constraint_pass_rate",1.2
+"tool+planning","ReAct","Mixtral-8x7B-MoE","validation","final_pass_rate",0
+"tool+planning","ReAct","Mixtral-8x7B-MoE","test","delivery_rate",51.2
+"tool+planning","ReAct","Mixtral-8x7B-MoE","test","commonsense_pass_rate",32.2
+"tool+planning","ReAct","Mixtral-8x7B-MoE","test","hard_constraint_pass_rate",0.7
+"tool+planning","ReAct","Mixtral-8x7B-MoE","test","final_pass_rate",0
+"tool+planning","ReAct","Gemini Pro","validation","delivery_rate",28.9
+"tool+planning","ReAct","Gemini Pro","validation","commonsense_pass_rate",18.9
+"tool+planning","ReAct","Gemini Pro","validation","hard_constraint_pass_rate",0.5
+"tool+planning","ReAct","Gemini Pro","validation","final_pass_rate",0
+"tool+planning","ReAct","Gemini Pro","test","delivery_rate",39.1
+"tool+planning","ReAct","Gemini Pro","test","commonsense_pass_rate",24.9
+"tool+planning","ReAct","Gemini Pro","test","hard_constraint_pass_rate",0.6
+"tool+planning","ReAct","Gemini Pro","test","final_pass_rate",0
+"tool+planning","ReAct","GPT-3.5-Turbo","validation","delivery_rate",86.7
+"tool+planning","ReAct","GPT-3.5-Turbo","validation","commonsense_pass_rate",54
+"tool+planning","ReAct","GPT-3.5-Turbo","validation","hard_constraint_pass_rate",0
+"tool+planning","ReAct","GPT-3.5-Turbo","validation","final_pass_rate",0
+"tool+planning","ReAct","GPT-3.5-Turbo","test","delivery_rate",91.8
+"tool+planning","ReAct","GPT-3.5-Turbo","test","commonsense_pass_rate",57.9
+"tool+planning","ReAct","GPT-3.5-Turbo","test","hard_constraint_pass_rate",0.5
+"tool+planning","ReAct","GPT-3.5-Turbo","test","final_pass_rate",0
+"tool+planning","ReAct","GPT-4-Turbo","validation","delivery_rate",89.4
+"tool+planning","ReAct","GPT-4-Turbo","validation","commonsense_pass_rate",61.1
+"tool+planning","ReAct","GPT-4-Turbo","validation","hard_constraint_pass_rate",15.2
+"tool+planning","ReAct","GPT-4-Turbo","validation","final_pass_rate",0.6
+"tool+planning","ReAct","GPT-4-Turbo","test","delivery_rate",93.1
+"tool+planning","ReAct","GPT-4-Turbo","test","commonsense_pass_rate",63.3
+"tool+planning","ReAct","GPT-4-Turbo","test","hard_constraint_pass_rate",10.5
+"tool+planning","ReAct","GPT-4-Turbo","test","final_pass_rate",0.6
+"planning","Direct","GPT-3.5-Turbo","validation","delivery_rate",100
+"planning","Direct","GPT-3.5-Turbo","validation","commonsense_pass_rate",60.2
+"planning","Direct","GPT-3.5-Turbo","validation","hard_constraint_pass_rate",11
+"planning","Direct","GPT-3.5-Turbo","validation","final_pass_rate",0
+"planning","Direct","GPT-3.5-Turbo","test","delivery_rate",100
+"planning","Direct","GPT-3.5-Turbo","test","commonsense_pass_rate",59.5
+"planning","Direct","GPT-3.5-Turbo","test","hard_constraint_pass_rate",9.5
+"planning","Direct","GPT-3.5-Turbo","test","final_pass_rate",0.6
+"planning","CoT","GPT-3.5-Turbo","validation","delivery_rate",100
+"planning","CoT","GPT-3.5-Turbo","validation","commonsense_pass_rate",66.3
+"planning","CoT","GPT-3.5-Turbo","validation","hard_constraint_pass_rate",11.9
+"planning","CoT","GPT-3.5-Turbo","validation","final_pass_rate",0
+"planning","CoT","GPT-3.5-Turbo","test","delivery_rate",100
+"planning","CoT","GPT-3.5-Turbo","test","commonsense_pass_rate",64.4
+"planning","CoT","GPT-3.5-Turbo","test","hard_constraint_pass_rate",9.8
+"planning","CoT","GPT-3.5-Turbo","test","final_pass_rate",0.4
+"planning","ReAct","GPT-3.5-Turbo","validation","delivery_rate",82.2
+"planning","ReAct","GPT-3.5-Turbo","validation","commonsense_pass_rate",47.6
+"planning","ReAct","GPT-3.5-Turbo","validation","hard_constraint_pass_rate",11.4
+"planning","ReAct","GPT-3.5-Turbo","validation","final_pass_rate",0.6
+"planning","ReAct","GPT-3.5-Turbo","test","delivery_rate",81.6
+"planning","ReAct","GPT-3.5-Turbo","test","commonsense_pass_rate",45.9
+"planning","ReAct","GPT-3.5-Turbo","test","hard_constraint_pass_rate",10.7
+"planning","ReAct","GPT-3.5-Turbo","test","final_pass_rate",0.7
+"planning","Reflexion","GPT-3.5-Turbo","validation","delivery_rate",93.9
+"planning","Reflexion","GPT-3.5-Turbo","validation","commonsense_pass_rate",53.8
+"planning","Reflexion","GPT-3.5-Turbo","validation","hard_constraint_pass_rate",11
+"planning","Reflexion","GPT-3.5-Turbo","validation","final_pass_rate",0
+"planning","Reflexion","GPT-3.5-Turbo","test","delivery_rate",92.1
+"planning","Reflexion","GPT-3.5-Turbo","test","commonsense_pass_rate",52.1
+"planning","Reflexion","GPT-3.5-Turbo","test","hard_constraint_pass_rate",9.9
+"planning","Reflexion","GPT-3.5-Turbo","test","final_pass_rate",0.6
+"planning","Direct","Mixtral-8x7B-MoE","validation","delivery_rate",100
+"planning","Direct","Mixtral-8x7B-MoE","validation","commonsense_pass_rate",68.1
+"planning","Direct","Mixtral-8x7B-MoE","validation","hard_constraint_pass_rate",3.3
+"planning","Direct","Mixtral-8x7B-MoE","validation","final_pass_rate",0
+"planning","Direct","Mixtral-8x7B-MoE","test","delivery_rate",99.3
+"planning","Direct","Mixtral-8x7B-MoE","test","commonsense_pass_rate",67
+"planning","Direct","Mixtral-8x7B-MoE","test","hard_constraint_pass_rate",3.9
+"planning","Direct","Mixtral-8x7B-MoE","test","final_pass_rate",0.7
+"planning","Direct","Gemini Pro","validation","delivery_rate",93.9
+"planning","Direct","Gemini Pro","validation","commonsense_pass_rate",65
+"planning","Direct","Gemini Pro","validation","hard_constraint_pass_rate",9.3
+"planning","Direct","Gemini Pro","validation","final_pass_rate",0.6
+"planning","Direct","Gemini Pro","test","delivery_rate",93.7
+"planning","Direct","Gemini Pro","test","commonsense_pass_rate",64.7
+"planning","Direct","Gemini Pro","test","hard_constraint_pass_rate",10.6
+"planning","Direct","Gemini Pro","test","final_pass_rate",2.1
+"planning","Direct","GPT-4-Turbo","validation","delivery_rate",100
+"planning","Direct","GPT-4-Turbo","validation","commonsense_pass_rate",80.4
+"planning","Direct","GPT-4-Turbo","validation","hard_constraint_pass_rate",47.1
+"planning","Direct","GPT-4-Turbo","validation","final_pass_rate",4.4
+"planning","Direct","GPT-4-Turbo","test","delivery_rate",100
+"planning","Direct","GPT-4-Turbo","test","commonsense_pass_rate",80.6
+"planning","Direct","GPT-4-Turbo","test","hard_constraint_pass_rate",44.3
+"planning","Direct","GPT-4-Turbo","test","final_pass_rate",4.4

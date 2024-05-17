@@ -1,0 +1,13 @@
+select,year,value
+number,2019,18206
+number,2020,14023
+number,2021,13981
+number,2022,13698
+revenue,2019,13632087
+revenue,2020,3689496
+revenue,2021,4583531
+revenue,2022,9300000
+employed,2019,52263
+employed,2020,44481
+employed,2021,42222
+employed,2022,40922

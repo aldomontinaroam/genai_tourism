@@ -8,6 +8,9 @@ library(stringr)
 library(wordcloud2)
 library(dplyr)
 library(reshape2)
+library(DT)
+library(shinyWidgets)
+library(scales)
 
 # Libraries for data manipulation and visualization
 library(tidyverse)   # For data manipulation and visualization
@@ -28,6 +31,9 @@ library(plotly)
 library(shinyBS)
 library(ggwordcloud)
 library(htmlwidgets)
+library(lubridate)
+
+custom_palette <- c("#bbdef0", "#00a6a6", "#efca08", "#f49f0a", "#f08700")
 
 # Source UI and server files
 source("1_ota/server_travel_agencies.R")

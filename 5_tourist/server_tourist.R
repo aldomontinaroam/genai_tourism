@@ -37,153 +37,191 @@ tourist_server <- function(input, output) {
   phase_order <- c("Dreaming", "Planning", "Pre-Travel", "On-Trip", "Post-Travel")
   tools_by_phase$phase <- factor(tools_by_phase$phase, levels = phase_order)
   
-  # Prepare the main plot
-  # Prepare the main plot
-  output$main_plot <- renderPlotly({
-    p <- ggplot(tools_by_phase, aes(x = phase, y = number_of_tools, fill = phase)) +
-      geom_col() +
-      labs(title = "Number of Tools for Each Phase",
-           x = "Phase",
-           y = "Number of Tools") +
-      theme_minimal() +
-      scale_fill_manual(values = custom_palette) +
-      guides(fill = FALSE)
+  
+  create_popup <- function(id, title, description, source, plot = NULL) {
+    modal_content <- list(
+      p(description),
+      div(strong("Source: "), source),
+      if(!is.null(plot)){plotlyOutput(paste0("plot_", id))}
+      else{tags$div(
+        id = "vr-img",
+        tags$img(src = "vr.png", width = "60%")
+        )}
+    )
     
-    ggplotly(p) %>%
-      event_register("plotly_click") %>%
-      onRender("
-    function(el, x) {
-      el.on('plotly_click', function(d) {
-        var data = d.points[0].data;
-        var phase = d.points[0].x;
-        var tools = data.text[d.points[0].pointIndex].split('<br>')[2];
-        var popup = $('<div></div>').attr('title', phase).html(tools);
-        $(popup).dialog({
-          height: 300,
-          width: 400,
-          modal: true
-        });
-      });
-    }
-  ")
-  })
-  
-  
-  
-  
-  
-  
-  
-  create_popup <- function(id, title, description) {
     showModal(modalDialog(
       title = title,
-      p(description),
-      plotlyOutput(paste0("plot_", id)),
+      modal_content,
       easyClose = TRUE,
       footer = NULL
     ))
   }
   
+  
   observeEvent(input$phase1, {
-    create_popup("phase1", "Dreaming and Research Phase", "
-    Generative AI-powered chatbots and virtual assistants are being used by travel companies to provide personalized trip inspiration and recommendations based on user preferences and past behavior.
-    AI-generated content, such as descriptive travel blogs, social media posts, and promotional materials, can influence traveler's dreaming and research phases by showcasing destinations and experiences in an engaging and visually appealing manner.
-    According to a study by Phocuswright, 38% of travelers use virtual assistants or chatbots for researching travel destinations and seeking inspiration.
-    A report by Tractica suggests that the global market for AI-generated content, including travel blogs and promotional materials, is expected to reach $42.7 billion by 2028, growing at a CAGR of 29.7%."
-    )
+    create_popup("phase1", "Dreaming and Research Phase", 
+                 "Even though most generative AI tools launched only in the recent months before our survey, 
+               leisure travelers have been experimenting with them and are largely pleased with their experiences. 
+               More than a third of surveyed leisure travelers recently used generative AI for travel inspiration.
+               84% of respondents reported being satisfied or very satisfied with the quality of generative AI’s recommendations.",
+                 "GENERATIVE AI’S INFLUENCE ON LEISURE TRAVELER BEHAVIORS - Oliver Wyman, Exhibit 1: Leisure travelers' prior experience with Generative AI", plot=1)
   })
   
   observeEvent(input$phase2, {
-    create_popup("phase2", "Planning and Booking Phase", "
-    Generative AI models are being used by OTAs and travel companies to generate personalized travel itineraries, taking into account user preferences, budget, and other constraints.
-    AI-powered natural language processing (NLP) and conversational AI assistants can help travelers plan and book their trips more efficiently by understanding complex queries and providing relevant recommendations.
-    A survey by Travelport found that 57% of travelers are willing to use AI-powered trip planning tools, and 38% would consider booking through an AI-powered travel agent.
-    According to a report by Drift, travel companies that use conversational AI assistants see an average increase of 28% in customer satisfaction rates during the booking phase."
-    )
+    create_popup("phase2", "Planning and Booking Phase", 
+                 "Generative AI-enabled channels will need to ensure they offer functionality that travelers find useful: 
+                 based on the survey, real-time price comparison, loyalty program integration, and the ability to book all 
+                 components of a trip in the same tool should be the top priorities to maximize traveler adoption.
+                 55% of leisure travelers would select a booking channel because it has Generative AI capabilities",
+                 "GENERATIVE AI’S INFLUENCE ON LEISURE TRAVELER BEHAVIORS - Oliver Wyman, Exhibit 2: Leisure travelers' prior experience with Generative AI", plot=1)
   })
   
   observeEvent(input$phase3, {
-    create_popup("phase3", "Pre-Travel Experience", "
-    AI-generated content, such as virtual tours, 360-degree videos, and immersive experiences, can enhance the pre-travel experience by allowing travelers to preview destinations and attractions before their trip.
-    Generative AI models can create personalized pre-trip guides, packing lists, and travel tips tailored to individual travelers' needs and preferences.
-    A study by Forrester Research indicates that 54% of travelers are interested in using virtual reality (VR) or augmented reality (AR) experiences to preview destinations and attractions before their trip.
-    According to a report by Salesforce, 62% of travel companies are already using AI-powered personalization for pre-trip communications and content."
-    )
+    create_popup("phase3", "Pre-Travel Experience", 
+                 "Studies demonstrate that a VR preview induces higher elaboration of mental imagery about 
+                 the experience and a stronger sense of presence compared to both the 360° preview and images 
+                 preview, thereby translating into enhanced brand experience. Such findings suggest that VR 
+                 is substantial in prompting tourists to “daydream” about lodging offers prior to experiencing them at 
+                 the destination's premises.",
+                 "Vanja Bogicevic, Soobin Seo, Jay A. Kandampully, Stephanie Q. Liu, Nancy A. Rudd, Virtual reality presence as a preamble of tourism experience: 
+                 The role of mental imagery, Tourism Management, Volume 74, 2019, Pages 55-64, https://doi.org/10.1016/j.tourman.2019.02.009")
   })
   
   observeEvent(input$phase4, {
-    create_popup("phase4", "On-Trip Experience", "
-    AI-powered language translation and interpretation services can facilitate communication between travelers and locals, enhancing the on-trip experience.
-    Generative AI models can provide real-time recommendations for activities, restaurants, and attractions based on the traveler's location, preferences, and real-time data.
-    A survey by Booking.com found that 49% of travelers would be interested in using real-time translation services powered by AI during their trip.
-    A report by Skift suggests that the global market for AI-powered travel recommendations and personalization is expected to reach $2.9 billion by 2025, growing at a CAGR of 27.3%."
-    )
+    create_popup("phase4", "On-Trip Experience", 
+                 "Chatbots are multilingual, offer instant responses, and 24/7 availability, which is ideal for 
+            customer-centric businesses such as travel companies, accommodation providers, or even destinations. 
+          They use existing platforms or browsers that travelers already have on their phones, which means that they 
+          don’t need to download a separate app and clutter their device. As chatbots can be implemented on any channel 
+          or social network, travelers can approach your brand to seek recommendations, book flights and hotels via 
+          different channels like Facebook, Skype, Slack, Twitter, etc, thus increasing your chances of reaching your target audience.
+          Users can ask questions in their own words and get a response rather than spending time searching for those answers 
+          on your website. Conversing is a much easier and pleasant experience to identify the best places to visit.",
+                 "Leading chatbot/conversational AI startups worldwide in 2023, by funding raised (in million U.S. dollars) [Graph], NFX, February 14, 2024. [Online]. Available: https://www.statista.com/statistics/1359073/chatbot-and-conversational-ai-startup-funding-worldwide/", plot=1)
   })
   
   observeEvent(input$phase5, {
-    create_popup("phase5", "Post-Travel Experience", "
-    AI-powered content generation tools can help travelers create personalized travel journals, photo albums, and videos, capturing their experiences in a visually appealing and engaging manner.
-    Generative AI models can analyze traveler feedback and reviews, helping travel companies understand customer sentiment and identify areas for improvement.
-    A study by Adobe found that 66% of travelers are interested in using AI-powered tools to create personalized travel journals, photo albums, or videos after their trip.
-    According to a report by Capgemini, travel companies that leverage AI for sentiment analysis and customer feedback can achieve up to 25% improvement in customer satisfaction scores."
-    )
-  })
+    create_popup("phase5", "Post-Travel Experience", 
+                 "Elite loyalty members are typically high-spending travelers who are more inclined to make supplier-direct 
+                 bookings. But while many online travel agencies (OTAs) and other technology companies have released generative AI tools, 
+                 suppliers generally have yet to do so. As a result, travel suppliers without generative AI capabilities may start to lose 
+                 direct booking share among their most valuable customers or, even worse, risk losing those loyal customers to competing 
+                 brands who incorporate generative AI capabilities into their own channels. Of the loyalty members who recently used the technology, 86% were satisfied or 
+                 very satisfied with the quality of the recommendations they received, and 64% booked all or most of them. Given that generative AI is still in its infancy, 
+                 that is a very strong vote of confidence from a seasoned and knowledgeable customer base.",
+                 "GENERATIVE AI HAS INTRIGUED THE MOST DEDICATED TRAVELERS - Oliver Wyman, Exhibit 2", plot=1)
+  
+    })
+  
   
   # Output dei grafici per ogni fase
   output$plot_phase1 <- renderPlotly({
-    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
-      layout(title = "Plot Phase 1") %>%
-      config(displayModeBar = FALSE)
+    # Define the data
+    satisfaction <- data.frame(
+      Category = c("Very dissatisfied", "Dissatisfied", "Neutral", "Satisfied", "Very satisfied"),
+      Percentage = c(1, 1, 14, 45, 39)
+    )
     
-    ggplotly(p) %>%
-      layout(title = "Plot Phase 1") %>%
-      config(displayModeBar = FALSE)
+    # Find the maximum percentage value
+    max_percentage <- max(satisfaction$Percentage)
+    
+    # Create a new column for fill color
+    satisfaction$Fill <- ifelse(satisfaction$Percentage == max_percentage, "#00a6a6", "#bbdef0")
+    
+    # Create ggplot object
+    p <- ggplot(satisfaction, aes(x = reorder(Category, Percentage), y = Percentage, fill = Fill)) +
+      geom_bar(stat = "identity") +
+      scale_fill_identity() +  # Use identity scale for fill
+      labs(title = "Satisfaction with Generative AI's recommendation quality",
+           subtitle = "% of leisure travelers with prior Generative AI use",
+           x = NULL, y = NULL) +
+      coord_flip() +
+      theme_minimal() +
+      theme(legend.position = "none",  # Remove legend
+            panel.grid.major = element_blank(),  # Remove major gridlines
+            panel.grid.minor = element_blank()) +  # Remove minor gridlines
+      guides(fill = "none")  # Correctly use "none" instead of FALSE
+    
+    # Convert ggplot to plotly
+    ggplotly(p)
   })
+  
   
   output$plot_phase2 <- renderPlotly({
-    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
-      layout(title = "Plot Phase 2") %>%
-      config(displayModeBar = FALSE)
-    
-    ggplotly(p) %>%
-      layout(title = "Plot Phase 2") %>%
-      config(displayModeBar = FALSE)
+    data <- data.frame(
+      Capability = c("Intuitive user experience", "Access to user review data",
+                     "Robust security/data privacy protections", "Ability to book vacation packages",
+                     "Ability to search for pricing/pay in cash or loyalty currency",
+                     "Ability to integrate with loyalty programs", "Ability to book all trip elements in one place",
+                     "Comparative pricing"),
+      Percentage = c(17, 21, 23, 32, 40, 41, 50, 76)
+    )
+    data <- data[order(data$Percentage, decreasing = FALSE), ]
+    data$Capability <- factor(data$Capability, levels = data$Capability)
+    colors <- ifelse(data$Percentage == max(data$Percentage), "#00a6a6", "#bbdef0")
+    plot_ly(data, x = ~Percentage, y = ~Capability, type = "bar", orientation = "h",
+            marker = list(color = colors)) %>%
+      layout(title = "Relative importance of Generative AI capabilities",
+             titlefont = list(size = 16),
+             margin = list(t = 50),  # Aggiunto margine superiore
+             xaxis = list(title = "% leisure travelers"),
+             yaxis = list(title = ""))
   })
   
-  output$plot_phase3 <- renderPlotly({
-    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
-      layout(title = "Plot Phase 3") %>%
-      config(displayModeBar = FALSE)
-    
-    ggplotly(p) %>%
-      layout(title = "Plot Phase 3") %>%
-      config(displayModeBar = FALSE)
-  })
+  # output$plot_phase3 <- renderPlotly({
+  #   # Your plot creation code for phase 3
+  # })
   
   output$plot_phase4 <- renderPlotly({
-    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
-      layout(title = "Plot Phase 4") %>%
-      config(displayModeBar = FALSE)
+    # Create data frame
+    data <- data.frame(
+      Company = c("ASAPP", "Moveworks", "Poe by Quora", "Observe.ai", "Ada", "Cresta", "Woebot Health", "Forethought", "Ushur", "Kasisto"),
+      Funding = c(380, 305, 226, 214, 190.6, 151, 123.3, 92, 92, 81.5)
+    )
     
-    ggplotly(p) %>%
-      layout(title = "Plot Phase 4") %>%
-      config(displayModeBar = FALSE)
+    # Sort data frame by Funding in descending order
+    data <- data[order(data$Funding), ]
+    
+    # Darken the longest bar
+    max_funding <- max(data$Funding)
+    colors <- ifelse(data$Funding == max_funding, "#00a6a6", "#bbdef0")
+    
+    fig <- plot_ly(data, y = factor(data$Company, levels = data$Company), x = ~Funding, type = "bar", marker = list(color = colors))
+    fig <- fig %>% layout(title = "Leading Chatbot AI Startups by funding raised", yaxis = list(tickangle = -45, tickfont = list(size = 10)), xaxis = list(title = "Funding in million U.S. dollars"))
+    
+    fig
   })
   
   output$plot_phase5 <- renderPlotly({
-    p <- plot_ly(x = ~rnorm(100), type = "histogram") %>%
-      layout(title = "Plot Phase 5") %>%
-      config(displayModeBar = FALSE)
+    data <- data.frame(
+      Recommendations_Booked = c("None of its recommendations", "A minority of its recommendations", "Neutral", "Most of its recommendations", "All of its recommendations"),
+      Recommendations_Percentage = c(5, 5, 27, 35, 29)
+    )
+    recommendations_order <- c("None of its recommendations", "A minority of its recommendations", "Neutral", "Most of its recommendations", "All of its recommendations")
+    data$Recommendations_Booked <- factor(data$Recommendations_Booked, levels = recommendations_order)
+    plot_recommendations <- ggplot(data, aes(x = Recommendations_Percentage, y = fct_reorder(Recommendations_Booked, Recommendations_Percentage))) +
+      geom_bar(stat = "identity", fill = ifelse(data$Recommendations_Percentage == max(data$Recommendations_Percentage), "#00a6a6", "#bbdef0")) +
+      theme_minimal() + 
+      theme(axis.line = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+      xlab("Percentage of members") +
+      ylab("Recommendations Booked") +
+      ggtitle("Recommendations Booked") +
+      theme(plot.margin = margin(t = 30, r = 10, b = 10, l = 10))  # Aggiunto margine
     
-    ggplotly(p) %>%
-      layout(title = "Plot Phase 5") %>%
-      config(displayModeBar = FALSE)
-  })
+    plot_recommendations <- ggplotly(plot_recommendations)
+    plot_recommendations %>%
+      layout(title = "Recommendations Booked", margin = list(t = 50), 
+             xaxis = list(title = "Percentage of members"), 
+             yaxis = list(title = "Recommendations Booked"))})
+  
+  
+  
+  
+  
   
   # Apply custom palette to all plots
   outputOptions(output, "plot_phase1", suspendWhenHidden = FALSE)
   outputOptions(output, "plot_phase2", suspendWhenHidden = FALSE)
-  outputOptions(output, "plot_phase3", suspendWhenHidden = FALSE)
   outputOptions(output, "plot_phase4", suspendWhenHidden = FALSE)
   outputOptions(output, "plot_phase5", suspendWhenHidden = FALSE)
 

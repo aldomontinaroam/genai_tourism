@@ -1,0 +1,13 @@
+method,llm,validation_delivery_rate,validation_commonsense_pass_rate,validation_hard_constraint_pass_rate_micro,validation_hard_constraint_pass_rate_macro,validation_final_pass_rate,test_delivery_rate,test_commonsense_pass_rate,test_hard_constraint_pass_rate_micro,test_hard_constraint_pass_rate_macro,test_final_pass_rate
+ReAct,"Mistral-7B-32K",8.9,5.9,0,0,0,7,4.8,0,0,0
+ReAct,"Mixtral-8x7B-MoE",49.4,30,0,1.2,0.6,51.2,32.2,0.2,0.7,0.4
+ReAct,"Gemini Pro",28.9,18.9,0,0.5,0.6,39.1,24.9,0,0.6,0.1
+ReAct,"GPT-3.5-Turbo",86.7,54,0,0,0,91.8,57.9,0,0.5,0.6
+ReAct,"GPT-4-Turbo",89.4,61.1,2.8,15.2,10.6,93.1,63.3,2,10.5,5.5
+Direct,GPT-3.5-Turbo,100,60.2,4.4,11,2.8,100,59.5,2.7,9.5,4.4
+CoT,GPT-3.5-Turbo,100,66.3,3.3,11.9,5,100,64.4,2.3,9.8,3.8
+ReAct,GPT-3.5-Turbo,82.2,47.6,3.9,11.4,6.7,81.6,45.9,2.5,10.7,3.1
+Reflexion,GPT-3.5-Turbo,93.9,53.8,2.8,11,2.8,92.1,52.1,2.2,9.9,3.8
+Direct,Mixtral-8x7B-MoE,100,68.1,5,3.3,1.1,99.3,67,3.7,3.9,1.6
+Direct,Gemini Pro,93.9,65,8.3,9.3,4.4,93.7,64.7,7.9,10.6,4.7
+Direct,GPT-4-Turbo,100,80.4,17.2,47.1,22.2,100,80.6,15.2,44.3,23.1
