@@ -1,10 +1,9 @@
+
 use_genai <- read_csv("6_rights/data/use_genai.csv")
-use_genai_combined <- use_genai %>%
-  mutate(answer = ifelse(answer == "No", "No", "Yes")) %>%
-  group_by(answer) %>%
-  summarise(value = sum(value))
 
 satisfaction_genai <- read.csv("6_rights/data/satisfaction_genai.csv")
+
+sentiment_twitter <- read_csv("6_rights/data/sentiment_twitter.csv")
 
 benchmark_genai <- read.csv("6_rights/data/genai_benchmark_tidy.csv")
 
@@ -14,21 +13,22 @@ rights_ui <- fluidPage(
   titlePanel("Leisure travelers' prior experience with Generative AI"),
   sidebarLayout(
     sidebarPanel(
-      h4("Insight"),
+      h4("Insights"),
       p("Leisure travelers have been experimenting with generative AI and are largely pleased with their experiences. In particular, ",
         strong("84% of respondents"), 
         " reported being ",
         em("satisfied or very satisfied"),
         " with the quality of generative AI’s recommendations."
       ),
-      h4("Plots"),
-      p("1. Share of leisure travelers who recently used generative artificial intelligence (AI) for travel inspiration, planning, or booking in the United States and Canada as of August 2023.", em("Source: Oliver Wyman August 2023 Generative AI Travel & Leisure survey")),
-      p("2. Satisfaction with generative artificial intelligence's (AI) recommendation quality among leisure travelers in the United States and Canada as of August 2023", em("Source: Oliver Wyman August 2023 Generative AI Travel & Leisure survey")),
+      h4("Sources"),
+      p(em("Oliver Wyman August 2023 Generative AI Travel & Leisure survey")),
+      p(em("Sentiment Analysis on Twitter Dataset"))
     ),
     mainPanel(
       tabsetPanel(
         tabPanel("Use", plotOutput("use_genai_plot")),
-        tabPanel("Satisfaction", plotOutput("satisfaction_genai_plot"))
+        tabPanel("Satisfaction", plotOutput("satisfaction_genai_plot")),
+        tabPanel("Sentiment", plotOutput("sentiment_twitter_plot"))
       )
     )
   ),

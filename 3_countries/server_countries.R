@@ -39,7 +39,7 @@ countries_server <- function(input, output) {
       labs(x = "Country", y = "Percentage") +  # Removed title
       theme_minimal() +
       theme(legend.position = "bottom",
-            axis.text.x = element_text(angle = 45, hjust = 1, size = 12),  # Increased font size
+            axis.text.x = element_text(angle = 0, hjust = 1, size = 12),  # Increased font size
             axis.text.y = element_text(size = 12),  # Increased font size for y-axis labels
             axis.title = element_text(size = 14),  # Increased font size for axis labels
             legend.text = element_text(size = 12),  # Increased font size for legend text

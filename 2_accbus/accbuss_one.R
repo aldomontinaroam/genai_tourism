@@ -1,25 +1,33 @@
+library(shiny)
+library(leaflet)
+library(wordcloud)
+library(tm)
+library(shinyWidgets)
+library(tidyverse)
+library(scales)
+
 # Server logic for Accommodation Businesses page
-accommodation_businesses_server <- function(input, output) {
+server <- function(input, output) {
   
   ### loading data
   
-  ota_share <- read_csv("2_accbus/data/ota_share_tidy.csv") 
+  ota_share <- read_csv("data/ota_share_tidy.csv") 
   
-  ota_commissions <- read_csv("2_accbus/data/ota_commissions_tidy.csv")
+  ota_commissions <- read_csv("data/ota_commissions_tidy.csv")
   
-  accbus_digital_investments <- read_csv("2_accbus/data/acc_bus_digital_investments.csv") %>%
+  accbus_digital_investments <- read_csv("data/acc_bus_digital_investments.csv") %>%
     arrange(value) %>%
     mutate(intention = factor(intention, levels=c("less", "same", "more", "not_sure"))) %>%
     mutate(season = factor(season, levels=c("Autumn 2022","Summer 2023", "Autumn 2023")))
   
-  accbus_ai_intentions <- read_csv("2_accbus/data/acc_bus_ai_interest.csv") %>%
+  accbus_ai_intentions <- read_csv("data/acc_bus_ai_interest.csv") %>%
     arrange(value) %>%
     mutate(intention = factor(intention, levels=c("use", "planned", "no", "not_know"))) %>%
     mutate(season = factor(season, levels=c("Summer 2023", "Autumn 2023")))
   
-  accbus_digital_topics <- read_csv("2_accbus/data/accbus_digital_topics.csv")
+  accbus_digital_topics <- read_csv("data/accbus_digital_topics.csv")
   
-  online_booking_products <- read_csv("2_accbus/data/online_booking_products.csv")
+  online_booking_products <- read_csv("data/online_booking_products.csv")
   
   custom_palette <- c("#bbdef0", "#00a6a6", "#efca08", "#f49f0a", "#f08700")
   
@@ -37,13 +45,12 @@ accommodation_businesses_server <- function(input, output) {
         y = NULL,
       ) +
       coord_flip() +
-      theme_minimal() +
+      theme_minimal(base_size = 14) +
       theme(
         legend.position = "none",
-        axis.text.y = element_text(size = 16),
+        axis.text.y = element_text(size = 17),
         axis.text.x = element_blank(),
-        plot.title = element_text(face = "bold", size = 20, hjust = 0.5),
-        plot.subtitle = element_text(size = 16, hjust = 0.5),
+        plot.title = element_text(face = "bold"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       )
@@ -71,8 +78,7 @@ accommodation_businesses_server <- function(input, output) {
            fill = NULL) +
       theme_minimal() +
       theme(legend.position = "top",
-            plot.title = element_text(face = "bold", size = 20, hjust = 0.5),
-            plot.subtitle = element_text(size = 16, hjust = 0.5),
+            plot.title = element_text(face = "bold", size = 16),
             axis.text = element_text(size = 16),
             axis.title = element_text(size = 16),
             legend.text = element_text(size = 16),
@@ -87,7 +93,7 @@ accommodation_businesses_server <- function(input, output) {
   output$accbus_digital_topics_plot <- renderPlot({
     ggplot(accbus_digital_topics, aes(x = fct_reorder(topic, value), y = value, fill = season)) +
       geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
-      geom_text(aes(label = paste0(value, "%")), size = 4, position = position_dodge(width = 0.9), hjust = -0.3) +
+      geom_text(aes(label = paste0(value, "%")), size = 4, position = position_dodge(width = 0.9), hjust = -0.1) +
       labs(title = "Digital Transformation Topics",
            subtitle = "Most important subjects for hoteliers when it comes to the digitalization of their businesses",
            x = NULL,
@@ -96,19 +102,15 @@ accommodation_businesses_server <- function(input, output) {
       scale_fill_manual(values = custom_palette, name = NULL) +
       theme_minimal() +
       theme(legend.position = "top",
-            legend.title = element_text(size = 16),
-            plot.title = element_text(face = "bold", size = 20, hjust = 0.5),
-            plot.subtitle = element_text(size = 16, hjust = 0.5),
-            axis.text.y = element_text(size = 16),
-            axis.text.x = element_blank(),
-            axis.title.x = element_text(size = 16),
-            axis.title.y = element_text(size = 16),
+            plot.title = element_text(face = "bold", size = 16),
+            axis.text = element_text(size = 16),
+            axis.title = element_text(size = 16),
             legend.text = element_text(size = 16),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             panel.border = element_blank(),
             panel.background = element_blank())
-      
+    
     
   })
   
@@ -128,8 +130,7 @@ accommodation_businesses_server <- function(input, output) {
            fill = NULL) +
       theme_minimal()+
       theme(legend.position = "top",
-            plot.title = element_text(face = "bold", size = 20, hjust = 0.5),
-            plot.subtitle = element_text(size = 16, hjust = 0.5),
+            plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
             axis.text = element_text(size = 16),
             axis.title = element_text(size = 16),
             legend.text = element_text(size = 16),
@@ -154,12 +155,11 @@ accommodation_businesses_server <- function(input, output) {
       scale_color_manual(values = custom_palette, name = "Scenario") +
       theme_minimal(base_size = 14) +
       theme(
-        plot.title = element_text(face = "bold", size = 20, hjust = 0.5),
-        plot.subtitle = element_text(size = 16, hjust = 0.5),
+        plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
         legend.position = "top"
       )
   })
-  
   
   output$ota_commissions_plot <- renderPlot({
     ggplot(ota_commissions, aes(x = year, y = value, color = factor(scenario))) +
@@ -173,10 +173,80 @@ accommodation_businesses_server <- function(input, output) {
       scale_color_manual(values = custom_palette, name = "Scenario") +
       theme_minimal(base_size = 14) +
       theme(
-        plot.title = element_text(face = "bold", size = 20, hjust = 0.5),
-        plot.subtitle = element_text(size = 16, hjust = 0.5),
+        plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
         legend.position = "top"
       )
   })
   
 }
+
+
+# UI for Accommodation Businesses page
+ui <- fluidPage(
+  
+  titlePanel("Why accommodation?"),
+  sidebarLayout(
+    sidebarPanel(
+      h4("Insights"),
+      p("With this chart, we want to illustrate why we have decided to focus on the accommodation
+business. As clearly shown, the majority of online travel bookings are made for hotels."),
+      h4("Sources"),
+      p(em("Accommodation Barometers Fall 2023, by Statista in collaboration with Booking.com"))
+    ),
+    mainPanel(
+      tabsetPanel(
+        tabPanel("Products", plotOutput("online_booking_products_plot"))
+      )
+    )
+  ),
+  
+  titlePanel("Accommodation Businesses Digital Investments"),
+  sidebarLayout(
+    sidebarPanel(
+      h4("Insights"),
+      p("Here, we want to demonstrate how much the accommodation business is investing in digital
+technology, what specific areas they are focusing on, and, most importantly, how much they plan
+to invest in generative AI."),
+      h4("Sources"),
+      p(em("Accommodation Barometers Fall 2023, by Statista in collaboration with Booking.com"))
+    ),
+    mainPanel(
+      tabsetPanel(
+        tabPanel("Digital Investments", plotOutput("accbus_digital_investments_plot")),
+        tabPanel("Digital Topics",plotOutput("accbus_digital_topics_plot")),
+        tabPanel("AI Investments", plotOutput("accbus_ai_intentions_plot"))
+      )
+    )
+  ),
+  
+  titlePanel("Accommodation Businesses VS OTAs"),
+  sidebarLayout(
+    sidebarPanel(
+      h4("Insights"),
+      p("We have presented forecasts for OTAs regarding the share of direct bookings by suppliers in the online
+travel market and the commissions paid by suppliers to OTAs for indirect bookings, reflecting different
+levels of investment by travel suppliers in AI:"),
+      h4("Sources"),
+      p(em("Source: Oliver Wyman August 2023 Generative AI Travel & Leisure survey")),
+      p("Scenario 0: Status quo
+Scenario 1: Travel suppliers invest very little in alternatives
+Scenario 2: Travel suppliers invest moderately in alternatives
+Scenario 3: Travel suppliers invest heavily in alternatives")
+    ),
+    mainPanel(
+      tabsetPanel(
+        tabPanel("OTA Shares",plotOutput("ota_share_plot")),
+        tabPanel("OTA Commissions",plotOutput("ota_commissions_plot"))
+      )
+    )
+  )
+)
+
+
+
+
+shinyApp(ui, server)
+
+
+

@@ -4,11 +4,11 @@ accommodation_businesses_ui <- fluidPage(
   titlePanel("Why accommodation?"),
   sidebarLayout(
     sidebarPanel(
-      h4("Insight"),
+      h4("Insights"),
       p("With this chart, we want to illustrate why we have decided to focus on the accommodation
 business. As clearly shown, the majority of online travel bookings are made for hotels."),
-      h4("Plots"),
-      p("")
+      h4("Sources"),
+      p(em("Accommodation Barometers Fall 2023, by Statista in collaboration with Booking.com"))
     ),
     mainPanel(
       tabsetPanel(
@@ -20,12 +20,12 @@ business. As clearly shown, the majority of online travel bookings are made for 
   titlePanel("Accommodation Businesses Digital Investments"),
   sidebarLayout(
     sidebarPanel(
-      h4("Insight"),
+      h4("Insights"),
       p("Here, we want to demonstrate how much the accommodation business is investing in digital
 technology, what specific areas they are focusing on, and, most importantly, how much they plan
 to invest in generative AI."),
-      h4("Plots"),
-      p("")
+      h4("Sources"),
+      p(em("Accommodation Barometers Fall 2023, by Statista in collaboration with Booking.com"))
     ),
     mainPanel(
       tabsetPanel(
@@ -39,23 +39,22 @@ to invest in generative AI."),
   titlePanel("Accommodation Businesses VS OTAs"),
   sidebarLayout(
     sidebarPanel(
-      h4("Insight"),
-      p("We have presented forecasts for OTAs regarding the share of direct bookings by suppliers in the online
-travel market and the commissions paid by suppliers to OTAs for indirect bookings, reflecting different
-levels of investment by travel suppliers in AI:"),
-      h4("Plots"),
-      p("Scenario 0: Status quo
-Scenario 1: Travel suppliers invest very little in alternatives
-Scenario 2: Travel suppliers invest moderately in alternatives
-Scenario 3: Travel suppliers invest heavily in alternatives")
+      h4("Insights"),
+      p("We have presented forecasts for OTAs regarding the share of direct bookings by suppliers in the online travel market and the commissions paid by suppliers to OTAs for indirect bookings, reflecting different levels of investment by travel suppliers in AI:"),
+      tags$ul(
+        tags$li("Scenario 0: Status quo"),
+        tags$li("Scenario 1: Travel suppliers invest very little in alternatives"),
+        tags$li("Scenario 2: Travel suppliers invest moderately in alternatives"),
+        tags$li("Scenario 3: Travel suppliers invest heavily in alternatives")
+      ),
+      h4("Sources"),
+      p(em("Oliver Wyman August 2023 Generative AI Travel & Leisure survey"))
     ),
     mainPanel(
       tabsetPanel(
-        tabPanel("OTA Shares",plotOutput("ota_share_plot")),
-        tabPanel("OTA Commissions",plotOutput("ota_commissions_plot"))
+        tabPanel("OTA Shares", plotOutput("ota_share_plot")),
+        tabPanel("OTA Commissions", plotOutput("ota_commissions_plot"))
       )
-      
-      
     )
-  ),
+  )
 )

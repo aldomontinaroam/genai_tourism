@@ -205,12 +205,12 @@ tourist_server <- function(input, output) {
       theme(axis.line = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
       xlab("Percentage of members") +
       ylab("Recommendations Booked") +
-      ggtitle("Recommendations Booked") +
+      ggtitle("Recommendations Booked by Loyalty Members") +
       theme(plot.margin = margin(t = 30, r = 10, b = 10, l = 10))  # Aggiunto margine
     
     plot_recommendations <- ggplotly(plot_recommendations)
     plot_recommendations %>%
-      layout(title = "Recommendations Booked", margin = list(t = 50), 
+      layout(title = "Recommendations Booked by Loyalty Members", margin = list(t = 50), 
              xaxis = list(title = "Percentage of members"), 
              yaxis = list(title = "Recommendations Booked"))})
   

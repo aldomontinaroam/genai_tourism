@@ -4,16 +4,17 @@ travel_agencies_ui <- fluidPage(
   titlePanel("Online vs Traditional Travel Market"),
   sidebarLayout(
     sidebarPanel(
-      h4("Insight"),
-      p(""),
-      h4("Plots"),
-      p("Online Travel Market. Source: Statista"),
-      p("Global Online Travel Agencies. Source: Statista"),
+      h4("Insights"),
+      p("After Covid, the Online Travel Global Market is expected to grow systematically.
+        Bigger players are getting even bigger.
+        Italian traditional agencies are recovering quite well."),
+      h4("Sources"),
+      p(em("Statista, Istat, ilsole24ore"))
     ),
     mainPanel(
       tabsetPanel(
         tabPanel("Market Size", plotOutput("online_travel_market_plot") ),
-        tabPanel("OTA share", plotOutput("ota_revenue_plot"))
+        tabPanel("Revenues", plotOutput("ota_revenue_plot"))
       )
       
     )
@@ -22,12 +23,13 @@ travel_agencies_ui <- fluidPage(
   titlePanel("OTA Projects"),
   sidebarLayout(
     sidebarPanel(
-      h4("Insight"),
-      p(""),
-      h4("Plots"),
-      p("Online Italian Market. Source: Statista"),
-      selectInput("color_var", "Select features:", choices = c("group", "type", "provider"))
-      
+      h4("Insights"),
+      p("OTAs are aware of the GenAI revolution and they are investing to keep their positions.
+      First they experimented with low-cost plugins, now they are building full applications.
+        Smaller players are emerging, but we could expect acquisitions as often happened in the past."),
+      selectInput("color_var", "Select features:", choices = c("group", "type", "provider")),
+      h4("Sources"),
+      p(em("Various Company Announcements"))
     ),
     mainPanel(
       tabsetPanel(
@@ -36,18 +38,18 @@ travel_agencies_ui <- fluidPage(
     )
   ),
 
-  titlePanel("Comparing with the Italian Travel Agencies"),
+  titlePanel("Status of Italian Travel Agencies"),
   sidebarLayout(
     sidebarPanel(
-      h4("Insight"),
-      p(""),
-      h4("Plots"),
-      p("Status of Italian Travel Agencies. Source Istat"),
+      h4("Insights"),
+      p("Travel Agencies are recovering after covid, as seen also above, but the number of companies and empoyees is slowly decreasing."),
       selectInput("ta_var", "Italian Travel Agency Variable", choices = c("number", "revenue", "employed")),
+      h4("Sources"),
+      p(em("Istat"))
     ),
     mainPanel(
       tabsetPanel(
-        tabPanel("TA in Italy", plotOutput("italian_ta_plot")),
+        tabPanel("Italian Agencies", plotOutput("italian_ta_plot")),
       )
     )
   )
