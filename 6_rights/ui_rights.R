@@ -90,8 +90,8 @@ rights_ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Table", dataTableOutput("benchmark_genai_table")),
-        tabPanel("Plot", renderPlot("benchmark_genai_plot"))
+        tabPanel("Table", dataTableOutput("benchmark_genai_table"))
+        #tabPanel("Plot", renderPlot("benchmark_genai_plot"))
       )
       
     )

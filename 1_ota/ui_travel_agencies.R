@@ -27,7 +27,13 @@ travel_agencies_ui <- fluidPage(
       p("OTAs are aware of the GenAI revolution and they are investing to keep their positions.
       First they experimented with low-cost plugins, now they are building full applications.
         Smaller players are emerging, but we could expect acquisitions as often happened in the past."),
-      selectInput("color_var", "Select features:", choices = c("group", "type", "provider")),
+      radioGroupButtons(
+        inputId = "color_var",
+        label = "Select feature:", 
+        choices = c("group", "type", "provider"),
+        status = "primary"
+      ),
+      #selectInput("color_var", "Select feature:", choices = c("group", "type", "provider")),
       h4("Sources"),
       p(em("Various Company Announcements"))
     ),
@@ -43,7 +49,20 @@ travel_agencies_ui <- fluidPage(
     sidebarPanel(
       h4("Insights"),
       p("Travel Agencies are recovering after covid, as seen also above, but the number of companies and empoyees is slowly decreasing."),
-      selectInput("ta_var", "Italian Travel Agency Variable", choices = c("number", "revenue", "employed")),
+      radioGroupButtons(
+        inputId = "ta_var",
+        label = "Italian Travel Agency Variable", 
+        choices = c("number", "revenue", "employed"),
+        status = "primary"
+      ),
+      #selectInput("ta_var", "Italian Travel Agency Variable", choices = c("number", "revenue", "employed")),
+      p("Show Italian Travel Agencies revenue in OTAs Plot"),
+      materialSwitch(
+        inputId = "show_italian_data",
+        label = "Show Italian Data",
+        status = "primary",
+        right = TRUE
+      ),
       h4("Sources"),
       p(em("Istat"))
     ),

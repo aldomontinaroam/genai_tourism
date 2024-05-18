@@ -27,9 +27,10 @@ accommodation_businesses_server <- function(input, output) {
   
   output$online_booking_products_plot <- renderPlot({
     ggplot(online_booking_products, aes(x = fct_reorder(type, value), y = value)) +
-      geom_bar(stat = "identity", fill = custom_palette[1], width = 0.8) +
+      geom_bar(stat = "identity", aes(fill = value == max(online_booking_products$value)), width = 0.8) +
       geom_text(aes(label = percent(value / 100, accuracy = 1)), 
                 hjust = -0.2, size = 6, color = "black") +
+      scale_fill_manual(values = c(custom_palette[1], custom_palette[2])) +
       labs(
         title = "Travel Product Online Bookings in Italy 2023",
         subtitle = "% of online bookings made for that travel supplier",

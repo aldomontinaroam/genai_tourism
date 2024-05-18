@@ -9,7 +9,8 @@ countries_ui <- fluidPage(
         hr(),
         p("Greece and France are the most skeptical, with around three-quarters of respondents in each stating that they do not plan to use AI. Germany, Austria, the Netherlands, and Portugal host more AI pioneers, with around a third of hoteliers in these countries reporting openness to try this novel technology."
           ),
-        p(strong("Source:")),"European Accommodation Barometer Fall 2023 - Statista x Booking.com"
+        p(strong("Source:")),"European Accommodation Barometer Fall 2023 - Statista x Booking.com",
+        p(strong("Source:")),"AI investment: EU and global indicators - European Parliament"
       ),
       conditionalPanel(
         condition = "input.tabs == 'Patents'",
@@ -46,6 +47,11 @@ countries_ui <- fluidPage(
         id = "tabs",
         tabPanel("Planned Use",
                  id="planned_use",
+                 div(
+                   id="titlediv",
+                   h4("Private investment in AI by country, 2023 (€ billion)"),
+                 ),
+                 plotlyOutput("investments"),
                  div(
                    id="titlediv",
                    h4("Current use of AI/planned use of AI in the next 6 months"),

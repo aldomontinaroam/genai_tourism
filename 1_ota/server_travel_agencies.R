@@ -39,6 +39,15 @@ travel_agencies_server <- function(input, output) {
        "")
   })
   
+  filtered_revenue <- reactive({
+    if (input$show_italian_data) {
+    ota_revenue
+  } else {
+    ota_revenue %>%
+      filter(company != "(Italian Travel Agencies)")
+  }
+  })
+  
   ### plots
   
   
@@ -70,8 +79,8 @@ travel_agencies_server <- function(input, output) {
   
   output$ota_revenue_plot <- renderPlot({
     
-    ggplot(ota_revenue, aes(x = year, y = value, color = factor(company))) +
-      geom_line(size=1.5) +
+    ggplot(filtered_revenue(), aes(x = year, y = value, color = factor(company), linetype = ifelse(company == "(Italian Travel Agencies)", "solid", "dashed"))) +
+      geom_line(size = 1.5) +
       labs(x = NULL, y = NULL, 
            title = "Comparing Global Online Travel Agencies",
            subtitle = "revenue in millions",
@@ -82,7 +91,8 @@ travel_agencies_server <- function(input, output) {
         plot.subtitle = element_text(size = 16, hjust = 0.5),
         legend.position = "bottom",
         legend.title = element_blank(),
-        legend.text = element_text(size = 16)
+        legend.text = element_text(size = 16),
+        legend.key = element_blank()
       )
   })
   

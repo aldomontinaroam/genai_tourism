@@ -42,17 +42,17 @@ to invest in generative AI."),
       h4("Insights"),
       p("We have presented forecasts for OTAs regarding the share of direct bookings by suppliers in the online travel market and the commissions paid by suppliers to OTAs for indirect bookings, reflecting different levels of investment by travel suppliers in AI:"),
       tags$ul(
-        tags$li("Scenario 0: Status quo"),
-        tags$li("Scenario 1: Travel suppliers invest very little in alternatives"),
-        tags$li("Scenario 2: Travel suppliers invest moderately in alternatives"),
-        tags$li("Scenario 3: Travel suppliers invest heavily in alternatives")
+        tags$li("Scenario 0: Constant booking share across travel supplier subsectors"),
+        tags$li("Scenario 1: No travel supplier GenAI investment"),
+        tags$li("Scenario 2: Moderate travel supplier GenAI investment"),
+        tags$li("Scenario 3: Significant travel supplier GenAI investment")
       ),
       h4("Sources"),
       p(em("Oliver Wyman August 2023 Generative AI Travel & Leisure survey"))
     ),
     mainPanel(
       tabsetPanel(
-        tabPanel("OTA Shares", plotOutput("ota_share_plot")),
+        tabPanel("OTA Share", plotOutput("ota_share_plot")),
         tabPanel("OTA Commissions", plotOutput("ota_commissions_plot"))
       )
     )

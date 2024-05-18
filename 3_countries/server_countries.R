@@ -122,4 +122,25 @@ countries_server <- function(input, output) {
   })
   
   
+  
+  # Create bar plot
+  output$investments <- renderPlotly({
+    # Create data frame
+    investments <- data.frame(
+      Country = c("United Kingdom", "Germany", "Sweden", 
+                  "France", "Canada", "Israel", "Spain"),
+      Value = c(3.5, 1.8, 1.8, 1.6, 1.5, 1.4, 0.4)
+    )
+    
+    # Create vector of colors for bars
+    bar_colors <- ifelse(investments$Country == "United Kingdom", "#00a6a6", "#bbdef0")
+    
+    plot_ly(investments, x = ~Value, y = ~Country, type = "bar", orientation = 'h', 
+            marker = list(color = bar_colors)) %>%
+      layout(title = NULL,
+             xaxis = list(title = "Value (€ billion)"),
+             yaxis = list(title = "Country", categoryorder = "array", categoryarray = rev(investments$Country)))
+  })
+  
+  
 }
