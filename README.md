@@ -1,5 +1,5 @@
 # Booking's SCIence: Strategic and Competitive Intelligence Project
-![img](https://freeimage.host/i/dHBFqen)
+![[https://freeimage.host/i/dHBFqen](https://iili.io/dHBFqen.png)
 
 ## About the project
 Our team was to be in charge of bringing useful insights to the Italian Minister of Tourism regarding the current use and possible future uses of Generative AI in the field of tourism.
